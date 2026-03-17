@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DỰ ÁN LÀM CHO VUI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="menuScreen" class="screen active">
+    <div class="menu-overlay"></div>
+
+    <div class="menu-content">
+      <h1 class="game-title">PROJECT CỦA TÔI</h1>
+      <p class="game-subtitle">Game đối kháng 2D</p>
+
+      <div class="character-wrap">
+        <img src="assets/ui/goku.png" class="character-img" alt="Goku" />
+      </div>
+
+      <div class="menu-buttons">
+        <button id="startBtn">Bắt đầu</button>
+        <button id="guideBtn">Hướng dẫn</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="gameScreen" class="screen hidden">
+    <canvas id="gameCanvas" width="1280" height="720"></canvas>
+    <div id="controlModeBadge" class="control-mode-badge hidden">Mode: PC</div>
+    <div id="touchControls" class="touch-controls hidden" aria-hidden="true">
+      <div class="touch-cluster touch-dpad">
+        <button class="touch-btn touch-btn-up" data-touch-control="w" aria-label="Nhảy">W</button>
+        <button class="touch-btn touch-btn-left" data-touch-control="a" aria-label="Di chuyển trái">A</button>
+        <button class="touch-btn touch-btn-down" data-touch-control="s" aria-label="Ngồi">S</button>
+        <button class="touch-btn touch-btn-right" data-touch-control="d" aria-label="Di chuyển phải">D</button>
+      </div>
+      <div class="touch-cluster touch-actions">
+        <button class="touch-btn touch-btn-power" data-touch-control="enter" aria-label="Gồng">P</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="deviceModal" class="modal hidden">
+    <div class="modal-box">
+      <h2>Bạn đang dùng thiết bị gì?</h2>
+      <p>Chọn để bật đúng kiểu điều khiển trước khi vào game.</p>
+      <div class="device-buttons">
+        <button id="mobileModeBtn">iOS / Android</button>
+        <button id="pcModeBtn">PC</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="guideModal" class="modal hidden">
+    <div class="modal-box">
+      <h2>Hướng dẫn</h2>
+      <p>A / D: Di chuyển</p>
+      <p>J: Đánh</p>
+      <p>K: Skill</p>
+      <button id="closeGuideBtn">Đóng</button>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

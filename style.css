@@ -1,0 +1,368 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #0b0f1a;
+  color: white;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.screen {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.active {
+  display: block;
+}
+
+#menuScreen {
+  background:
+    radial-gradient(circle at center, rgba(255,200,0,0.15), transparent 40%),
+    linear-gradient(180deg, #0b1220, #020617);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.5;
+}
+
+.menu-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 24px;
+}
+
+.game-title {
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffd54a;
+  text-shadow: 0 0 20px rgba(255, 213, 74, 0.35);
+}
+
+.game-subtitle {
+  margin-top: 10px;
+  color: #cbd5e1;
+  font-size: 18px;
+}
+
+#menuCanvas {
+  margin: 24px auto 18px;
+  display: block;
+  image-rendering: pixelated;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+}
+
+.menu-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+button {
+  min-width: 180px;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffcc00, #ff8800);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(255,140,0,0.4);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.modal-box {
+  width: min(90vw, 360px);
+  background: #111827;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+
+.modal-box h2 {
+  margin-bottom: 14px;
+  color: #ffd54a;
+}
+
+.modal-box p {
+  margin: 8px 0;
+  color: #e2e8f0;
+}
+
+.device-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+#gameScreen {
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.hud {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 5;
+}
+
+.hud-title {
+  color: #111827;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.hp-bar-wrap {
+  width: 280px;
+  height: 24px;
+  background: rgba(0,0,0,0.25);
+  border: 2px solid rgba(255,255,255,0.8);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.hp-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #ef4444 0%, #22c55e 100%);
+}
+
+#gameCanvas {
+  display: block;
+  margin: 0 auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.control-mode-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 9;
+  padding: 10px 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.78);
+  color: #f8fafc;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+.touch-controls {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+
+.touch-cluster {
+  position: absolute;
+  bottom: 22px;
+  display: flex;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.touch-dpad {
+  left: 20px;
+  width: 188px;
+  height: 188px;
+  display: block;
+}
+
+.touch-actions {
+  right: 20px;
+  align-items: flex-end;
+}
+
+.touch-btn {
+  min-width: 0;
+  width: 68px;
+  height: 68px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #f8fafc;
+  font-size: 22px;
+  font-weight: 800;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.touch-btn:hover {
+  transform: none;
+}
+
+.touch-btn:active,
+.touch-btn.is-active {
+  transform: scale(0.96);
+  background: rgba(255, 204, 0, 0.22);
+  border-color: rgba(255, 220, 120, 0.58);
+}
+
+.touch-btn-power {
+  background: rgba(120, 46, 18, 0.72);
+}
+
+.touch-dpad .touch-btn {
+  position: absolute;
+}
+
+.touch-btn-up {
+  left: 60px;
+  top: 0;
+}
+
+.touch-btn-left {
+  left: 0;
+  top: 60px;
+}
+
+.touch-btn-down {
+  left: 60px;
+  top: 120px;
+}
+
+.touch-btn-right {
+  left: 120px;
+  top: 60px;
+}
+
+@media (min-width: 1025px) {
+  body:not(.force-touch-controls) .touch-controls {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .touch-cluster {
+    bottom: 16px;
+    gap: 10px;
+  }
+
+  .control-mode-badge {
+    top: 12px;
+    right: 12px;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .touch-dpad {
+    left: 14px;
+    width: 172px;
+    height: 172px;
+  }
+
+  .touch-actions {
+    right: 14px;
+  }
+
+  .touch-btn {
+    width: 62px;
+    height: 62px;
+    border-radius: 18px;
+    font-size: 20px;
+  }
+
+  .touch-btn-up {
+    left: 55px;
+    top: 0;
+  }
+
+  .touch-btn-left {
+    left: 0;
+    top: 55px;
+  }
+
+  .touch-btn-down {
+    left: 55px;
+    top: 110px;
+  }
+
+  .touch-btn-right {
+    left: 110px;
+    top: 55px;
+  }
+}
+
+.character-wrap {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.character-img {
+  height: 320px;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 0 30px rgba(255, 200, 0, 0.5))
+    drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+  animation: floatChar 2.5s ease-in-out infinite;
+}
+
+@keyframes floatChar {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
