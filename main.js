@@ -28,6 +28,9 @@ const touchButtons = Array.from(document.querySelectorAll("[data-touch-control]"
 const gameCanvas = document.getElementById("gameCanvas");
 const ctx = gameCanvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
+const auraTintCanvas = document.createElement("canvas");
+const auraTintCtx = auraTintCanvas.getContext("2d");
+auraTintCtx.imageSmoothingEnabled = false;
 const effectKameStorageKey = "effectKameOffset";
 
 function loadFrames(path, count) {
@@ -1439,6 +1442,8 @@ function drawAuraLayer(frames, effectState, options) {
   const auraBottomY = groundY + options.offsetY;
   const drawX = Math.round(auraCenterX - drawWidth / 2);
   const drawY = Math.round(auraBottomY - drawHeight);
+  const tintColor = options.tintColor || null;
+  const tintAlpha = options.tintAlpha || 0;
 
   ctx.save();
   ctx.globalAlpha = effectState.alpha;
@@ -1451,7 +1456,30 @@ function drawAuraLayer(frames, effectState, options) {
     ctx.translate(-centerX, 0);
   }
 
-  ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+  if (tintColor && tintAlpha > 0) {
+    if (auraTintCanvas.width !== drawWidth || auraTintCanvas.height !== drawHeight) {
+      auraTintCanvas.width = drawWidth;
+      auraTintCanvas.height = drawHeight;
+      auraTintCtx.imageSmoothingEnabled = false;
+    } else {
+      auraTintCtx.clearRect(0, 0, drawWidth, drawHeight);
+    }
+
+    auraTintCtx.save();
+    auraTintCtx.clearRect(0, 0, drawWidth, drawHeight);
+    auraTintCtx.filter = options.filter;
+    auraTintCtx.drawImage(img, 0, 0, drawWidth, drawHeight);
+    auraTintCtx.filter = "none";
+    auraTintCtx.globalCompositeOperation = "source-atop";
+    auraTintCtx.globalAlpha = tintAlpha;
+    auraTintCtx.fillStyle = tintColor;
+    auraTintCtx.fillRect(0, 0, drawWidth, drawHeight);
+    auraTintCtx.restore();
+
+    ctx.drawImage(auraTintCanvas, drawX, drawY, drawWidth, drawHeight);
+  } else {
+    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+  }
   ctx.restore();
 }
 
@@ -1496,7 +1524,9 @@ function drawAuraEffect() {
     offsetX: 1,
     offsetY: 18,
     composite: "screen",
-    filter: "sepia(1) saturate(12) hue-rotate(2deg) brightness(1.48) contrast(1.14)"
+    filter: "sepia(1) saturate(12) hue-rotate(2deg) brightness(1.48) contrast(1.14)",
+    tintColor: "rgba(255, 214, 74, 1)",
+    tintAlpha: 0.36
   });
 
   if (aura4Effect.active) {
