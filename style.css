@@ -10,11 +10,13 @@ body {
   color: white;
   overflow: hidden;
   touch-action: none;
+  min-height: 100dvh;
 }
 
 .screen {
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   position: relative;
 }
 
@@ -82,6 +84,28 @@ body {
   flex-wrap: wrap;
 }
 
+.menu-options {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.menu-toggle-btn {
+  min-width: 150px;
+  padding: 12px 16px;
+  font-size: 15px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #22c55e, #15803d);
+  box-shadow: 0 10px 20px rgba(21, 128, 61, 0.28);
+}
+
+.menu-toggle-btn.is-off {
+  background: linear-gradient(180deg, #475569, #1e293b);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.28);
+}
+
 button {
   min-width: 180px;
   padding: 16px;
@@ -140,9 +164,126 @@ button:hover {
 #gameScreen {
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   background: #000;
   overflow: hidden;
   touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-panel {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 9;
+  width: min(270px, calc(100vw - 76px));
+  padding: 8px 10px 10px;
+  border: 2px solid rgba(233, 239, 255, 0.92);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(28, 37, 59, 0.96) 0%, rgba(17, 24, 39, 0.94) 100%);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.28), inset 0 0 0 2px rgba(255,255,255,0.08);
+  pointer-events: none;
+}
+
+.status-character-name {
+  margin-bottom: 6px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(255, 210, 88, 0.7);
+}
+
+.status-value-text {
+  margin-bottom: 3px;
+  color: rgba(255,255,255,0.9);
+  font-size: 10px;
+  text-align: right;
+  letter-spacing: 0.2px;
+}
+
+.status-bar {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  margin-bottom: 8px;
+  background: #222;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.85);
+}
+
+.status-panel .status-bar:last-child {
+  margin-bottom: 0;
+}
+
+.status-hp-fill,
+.status-hp-lag,
+.status-power-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
+}
+
+.status-hp-fill {
+  z-index: 2;
+  background: linear-gradient(90deg, #5eff75 0%, #21c83f 55%, #12872a 100%);
+  transition: width 0.3s ease;
+}
+
+.status-hp-lag {
+  z-index: 1;
+  background: linear-gradient(90deg, #ff5757 0%, #db1010 100%);
+  transition: width 0.8s ease;
+}
+
+.status-power-fill {
+  z-index: 1;
+  background: linear-gradient(90deg, #004cff 0%, #00ccff 100%);
+  transition: width 0.3s ease;
+  box-shadow: 0 0 12px rgba(0, 204, 255, 0.55);
+}
+
+.status-power-bar.is-surged .status-power-fill {
+  animation: status-power-aura 1s infinite alternate;
+}
+
+.status-hp-fill.is-low {
+  animation: status-danger 0.4s infinite;
+}
+
+body.force-touch-controls .status-panel {
+  top: 8px;
+  left: 8px;
+  width: min(220px, calc(100vw - 96px));
+  padding: 7px 8px 8px;
+  border-radius: 12px;
+}
+
+body.force-touch-controls .status-character-name {
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+
+body.force-touch-controls .status-value-text {
+  font-size: 9px;
+}
+
+body.force-touch-controls .status-bar {
+  height: 13px;
+  margin-bottom: 6px;
+}
+
+@keyframes status-power-aura {
+  from { box-shadow: 0 0 8px rgba(0, 204, 255, 0.55); }
+  to { box-shadow: 0 0 20px rgba(0, 204, 255, 0.95); }
+}
+
+@keyframes status-danger {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.9); }
+  100% { filter: brightness(1); }
 }
 
 .hud {
@@ -179,15 +320,19 @@ button:hover {
 
 #gameCanvas {
   display: block;
-  margin: 0 auto;
+  margin: 0;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  width: min(100vw, calc(100dvh * 1.7777778));
+  height: min(100dvh, calc(100vw * 0.5625));
+  max-width: 100vw;
+  max-height: 100dvh;
 }
 
 .control-mode-badge {
   position: absolute;
-  top: 18px;
-  right: 18px;
+  top: max(18px, env(safe-area-inset-top));
+  right: max(18px, env(safe-area-inset-right));
   z-index: 9;
   padding: 10px 14px;
   border: 1px solid rgba(255,255,255,0.14);
@@ -212,22 +357,24 @@ button:hover {
 
 .touch-cluster {
   position: absolute;
-  bottom: 22px;
+  bottom: max(22px, env(safe-area-inset-bottom));
   display: flex;
   gap: 12px;
   pointer-events: auto;
 }
 
 .touch-dpad {
-  left: 20px;
+  left: max(20px, env(safe-area-inset-left));
   width: 188px;
   height: 188px;
   display: block;
 }
 
 .touch-actions {
-  right: 20px;
-  align-items: flex-end;
+  right: max(20px, env(safe-area-inset-right));
+  width: 156px;
+  height: 156px;
+  display: block;
 }
 
 .touch-btn {
@@ -264,7 +411,15 @@ button:hover {
   background: rgba(120, 46, 18, 0.72);
 }
 
+.touch-btn-attack {
+  background: rgba(22, 64, 125, 0.78);
+}
+
 .touch-dpad .touch-btn {
+  position: absolute;
+}
+
+.touch-actions .touch-btn {
   position: absolute;
 }
 
@@ -288,6 +443,16 @@ button:hover {
   top: 60px;
 }
 
+.touch-btn-attack {
+  left: 0;
+  top: 52px;
+}
+
+.touch-btn-power {
+  right: 0;
+  top: 0;
+}
+
 @media (min-width: 1025px) {
   body:not(.force-touch-controls) .touch-controls {
     display: none !important;
@@ -295,26 +460,55 @@ button:hover {
 }
 
 @media (max-width: 768px) {
+  body.force-touch-controls #gameCanvas {
+    width: min(100vw, calc(100dvh * 1.7777778));
+    height: min(100dvh, calc(100vw * 0.5625));
+  }
+
+  .status-panel {
+    top: max(8px, env(safe-area-inset-top));
+    left: max(8px, env(safe-area-inset-left));
+    width: min(220px, calc(100vw - 96px));
+    padding: 7px 8px 8px;
+    border-radius: 12px;
+  }
+
+  .status-character-name {
+    margin-bottom: 5px;
+    font-size: 13px;
+  }
+
+  .status-value-text {
+    font-size: 9px;
+  }
+
+  .status-bar {
+    height: 13px;
+    margin-bottom: 6px;
+  }
+
   .touch-cluster {
-    bottom: 16px;
+    bottom: max(16px, env(safe-area-inset-bottom));
     gap: 10px;
   }
 
   .control-mode-badge {
-    top: 12px;
-    right: 12px;
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
     padding: 8px 12px;
     font-size: 13px;
   }
 
   .touch-dpad {
-    left: 14px;
+    left: max(14px, env(safe-area-inset-left));
     width: 172px;
     height: 172px;
   }
 
   .touch-actions {
-    right: 14px;
+    right: max(14px, env(safe-area-inset-right));
+    width: 146px;
+    height: 146px;
   }
 
   .touch-btn {
@@ -342,6 +536,16 @@ button:hover {
   .touch-btn-right {
     left: 110px;
     top: 55px;
+  }
+
+  .touch-btn-attack {
+    left: 0;
+    top: 48px;
+  }
+
+  .touch-btn-power {
+    right: 0;
+    top: 0;
   }
 }
 

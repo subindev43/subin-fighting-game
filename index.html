@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>DỰ ÁN LÀM CHO VUI</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -15,18 +15,37 @@
       <p class="game-subtitle">Game đối kháng 2D</p>
 
       <div class="character-wrap">
-        <img src="assets/ui/goku.png" class="character-img" alt="Goku" />
+        <img id="menuCharacterImage" src="assets/EFFECT GAME/ui/goku.png" class="character-img" alt="Goku" />
       </div>
 
       <div class="menu-buttons">
         <button id="startBtn">Bắt đầu</button>
         <button id="guideBtn">Hướng dẫn</button>
       </div>
+
+      <div class="menu-options">
+        <button id="toggleTrainingBotBtn" class="menu-toggle-btn">Bot Test: ON</button>
+        <button id="toggleBotSpamBtn" class="menu-toggle-btn is-off">Bot Spam: OFF</button>
+      </div>
     </div>
   </div>
 
   <div id="gameScreen" class="screen hidden">
     <canvas id="gameCanvas" width="1280" height="720"></canvas>
+    <div class="status-panel">
+      <div id="statusCharacterName" class="status-character-name">Goku Saiyan</div>
+
+      <div id="hpText" class="status-value-text">HP: 100 / 100</div>
+      <div class="status-bar status-hp-bar">
+        <div id="healthDamageBar" class="status-hp-lag" style="width: 100%;"></div>
+        <div id="healthHudFill" class="status-hp-fill" style="width: 100%;"></div>
+      </div>
+
+      <div id="powerText" class="status-value-text">Power: 0 / 100</div>
+      <div id="powerBarUi" class="status-bar status-power-bar">
+        <div id="powerHudFill" class="status-power-fill" style="width: 0%;"></div>
+      </div>
+    </div>
     <div id="controlModeBadge" class="control-mode-badge hidden">Mode: PC</div>
     <div id="touchControls" class="touch-controls hidden" aria-hidden="true">
       <div class="touch-cluster touch-dpad">
@@ -36,6 +55,7 @@
         <button class="touch-btn touch-btn-right" data-touch-control="d" aria-label="Di chuyển phải">D</button>
       </div>
       <div class="touch-cluster touch-actions">
+        <button class="touch-btn touch-btn-attack" data-touch-control="j" aria-label="Đánh">J</button>
         <button class="touch-btn touch-btn-power" data-touch-control="enter" aria-label="Gồng">P</button>
       </div>
     </div>
@@ -59,6 +79,18 @@
       <p>J: Đánh</p>
       <p>K: Skill</p>
       <button id="closeGuideBtn">Đóng</button>
+    </div>
+  </div>
+
+  <div id="pauseModal" class="modal hidden">
+    <div class="modal-box">
+      <h2>TẠM DỪNG</h2>
+      <p>BẠN MUỐN VỀ MENU HAY RESET LẠI GAME</p>
+      <p>NHẤN PHÍM ESC ĐỂ ĐỒNG Ý</p>
+      <div class="device-buttons">
+        <button id="pauseMenuBtn">Ve Menu</button>
+        <button id="pauseResetBtn">Reset</button>
+      </div>
     </div>
   </div>
 
