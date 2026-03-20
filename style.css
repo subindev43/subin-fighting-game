@@ -84,6 +84,39 @@ body {
   flex-wrap: wrap;
 }
 
+.stage-picker {
+  margin-top: 18px;
+}
+
+.stage-picker-label {
+  margin-bottom: 10px;
+  color: #cbd5e1;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.stage-picker-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.stage-btn {
+  min-width: 140px;
+  padding: 12px 16px;
+  font-size: 15px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #334155, #0f172a);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.28);
+}
+
+.stage-btn.is-selected {
+  background: linear-gradient(180deg, #38bdf8, #0369a1);
+  box-shadow: 0 10px 22px rgba(3, 105, 161, 0.35);
+}
+
 .menu-options {
   margin-top: 14px;
   display: flex;
@@ -415,6 +448,14 @@ body.force-touch-controls .status-bar {
   background: rgba(22, 64, 125, 0.78);
 }
 
+.touch-btn-skill {
+  background: rgba(17, 94, 89, 0.78);
+}
+
+.touch-btn-kame {
+  background: rgba(91, 33, 182, 0.76);
+}
+
 .touch-dpad .touch-btn {
   position: absolute;
 }
@@ -445,12 +486,22 @@ body.force-touch-controls .status-bar {
 
 .touch-btn-attack {
   left: 0;
-  top: 52px;
+  top: 0;
 }
 
 .touch-btn-power {
   right: 0;
   top: 0;
+}
+
+.touch-btn-skill {
+  left: 0;
+  bottom: 0;
+}
+
+.touch-btn-kame {
+  right: 0;
+  bottom: 0;
 }
 
 @media (min-width: 1025px) {
@@ -540,12 +591,22 @@ body.force-touch-controls .status-bar {
 
   .touch-btn-attack {
     left: 0;
-    top: 48px;
+    top: 0;
   }
 
   .touch-btn-power {
     right: 0;
     top: 0;
+  }
+
+  .touch-btn-skill {
+    left: 0;
+    bottom: 0;
+  }
+
+  .touch-btn-kame {
+    right: 0;
+    bottom: 0;
   }
 }
 
