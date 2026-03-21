@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>DỰ ÁN LÀM CHO VUI</title>
+  <title>Dự Án Làm Cho Vui</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -19,12 +19,12 @@
       </div>
 
       <div class="menu-buttons">
-        <button id="startBtn">Bắt đầu</button>
-        <button id="guideBtn">Hướng dẫn</button>
+        <button id="startBtn" type="button">Bắt đầu</button>
+        <button id="guideBtn" type="button">Hướng dẫn</button>
       </div>
 
       <div class="stage-picker">
-        <p class="stage-picker-label">Chon Stage</p>
+        <p class="stage-picker-label">Chọn Stage</p>
         <div class="stage-picker-buttons">
           <button id="stage1Btn" class="stage-btn is-selected" type="button">Stage 1</button>
           <button id="stage2Btn" class="stage-btn" type="button">Stage 2</button>
@@ -32,8 +32,8 @@
       </div>
 
       <div class="menu-options">
-        <button id="toggleTrainingBotBtn" class="menu-toggle-btn">Bot Test: ON</button>
-        <button id="toggleBotSpamBtn" class="menu-toggle-btn is-off">Bot Spam: OFF</button>
+        <button id="toggleTrainingBotBtn" class="menu-toggle-btn" type="button">Bot Test: ON</button>
+        <button id="toggleBotSpamBtn" class="menu-toggle-btn is-off" type="button">Bot Spam: OFF</button>
       </div>
     </div>
   </div>
@@ -54,19 +54,43 @@
         <div id="powerHudFill" class="status-power-fill" style="width: 0%;"></div>
       </div>
     </div>
-    <div id="controlModeBadge" class="control-mode-badge hidden">Mode: PC</div>
+
+    <div class="game-top-right">
+      <div id="controlModeBadge" class="control-mode-badge hidden">Mode: PC</div>
+      <div class="hud-tools">
+        <button id="openGuideInGameBtn" class="hud-icon-btn" type="button" aria-label="Mở hướng dẫn">?</button>
+        <button id="hudPauseBtn" class="hud-icon-btn" type="button" aria-label="Tạm dừng">II</button>
+      </div>
+    </div>
+
     <div id="touchControls" class="touch-controls hidden" aria-hidden="true">
       <div class="touch-cluster touch-dpad">
-        <button class="touch-btn touch-btn-up" data-touch-control="w" aria-label="Nhảy">W</button>
-        <button class="touch-btn touch-btn-left" data-touch-control="a" aria-label="Di chuyển trái">A</button>
-        <button class="touch-btn touch-btn-down" data-touch-control="s" aria-label="Ngồi">S</button>
-        <button class="touch-btn touch-btn-right" data-touch-control="d" aria-label="Di chuyển phải">D</button>
+        <button class="touch-btn touch-btn-up" data-touch-control="w" type="button" aria-label="Nhảy">W</button>
+        <button class="touch-btn touch-btn-left" data-touch-control="a" type="button" aria-label="Di chuyển trái">A</button>
+        <button class="touch-btn touch-btn-down" data-touch-control="s" type="button" aria-label="Ngồi">S</button>
+        <button class="touch-btn touch-btn-right" data-touch-control="d" type="button" aria-label="Di chuyển phải">D</button>
       </div>
       <div class="touch-cluster touch-actions">
-        <button class="touch-btn touch-btn-attack" data-touch-control="j" aria-label="Đánh">J</button>
-        <button class="touch-btn touch-btn-skill" data-touch-control="h" aria-label="Chưởng">H</button>
-        <button class="touch-btn touch-btn-kame" data-touch-control="o" aria-label="Kamehameha">O</button>
-        <button class="touch-btn touch-btn-power" data-touch-control="enter" aria-label="Gồng">P</button>
+        <button class="touch-btn touch-btn-attack" data-touch-control="j" type="button" aria-label="Đánh">
+          <span class="touch-btn-label">Đấm</span>
+          <span class="touch-btn-hint">J</span>
+        </button>
+        <button class="touch-btn touch-btn-power" data-touch-control="enter" type="button" aria-label="Gồng">
+          <span class="touch-btn-label">Gồng</span>
+          <span class="touch-btn-hint">Enter</span>
+        </button>
+        <button class="touch-btn touch-btn-skill" data-touch-control="h" type="button" aria-label="Chưởng">
+          <span class="touch-btn-label">Ki</span>
+          <span class="touch-btn-hint">H</span>
+        </button>
+        <button class="touch-btn touch-btn-kame" data-touch-control="o" type="button" aria-label="Kamehameha">
+          <span class="touch-btn-label">Kame</span>
+          <span class="touch-btn-hint">O</span>
+        </button>
+        <button class="touch-btn touch-btn-ultimate" data-touch-control="space" type="button" aria-label="Tuyệt kỹ">
+          <span class="touch-btn-label">Ult</span>
+          <span class="touch-btn-hint">Space</span>
+        </button>
       </div>
     </div>
   </div>
@@ -74,36 +98,67 @@
   <div id="deviceModal" class="modal hidden">
     <div class="modal-box">
       <h2>Bạn đang dùng thiết bị gì?</h2>
-      <p>Chọn để bật đúng kiểu điều khiển trước khi vào game.</p>
+      <p>Chọn đúng kiểu điều khiển trước khi vào trận.</p>
       <div class="device-buttons">
-        <button id="mobileModeBtn">iOS / Android</button>
-        <button id="pcModeBtn">PC</button>
+        <button id="mobileModeBtn" type="button">iOS / Android</button>
+        <button id="pcModeBtn" type="button">PC</button>
       </div>
     </div>
   </div>
 
   <div id="guideModal" class="modal hidden">
-    <div class="modal-box">
-      <h2>Hướng dẫn</h2>
-      <p>A / D: Di chuyển</p>
-      <p>J: Đánh</p>
-      <p>K: Skill</p>
-      <button id="closeGuideBtn">Đóng</button>
+    <div class="modal-box guide-modal-box">
+      <h2>Hướng dẫn điều khiển</h2>
+      <p class="guide-intro">Bản mobile đã đồng bộ theo bản PC. Dưới đây là toàn bộ nút và skill đang dùng trong game.</p>
+
+      <div class="guide-layout">
+        <section class="guide-card">
+          <h3>PC</h3>
+          <ul class="guide-list">
+            <li><strong>A / D:</strong> di chuyển trái phải. Nhấn nhanh <strong>D</strong> 2 lần để chạy.</li>
+            <li><strong>W:</strong> nhảy. Bấm lại trên không để nhảy đôi, giữ khi đang bay để lơ lửng.</li>
+            <li><strong>S:</strong> ngồi. Giữ <strong>S</strong> để chuẩn bị biến thể skill đặc biệt.</li>
+            <li><strong>J:</strong> đánh thường. Tự đổi đòn khi đang chạy hoặc đang ở trên không.</li>
+            <li><strong>H:</strong> chưởng. Đứng yên là chưởng thường, di chuyển là chưởng di động, giữ <strong>S + H</strong> để dịch chuyển tức thời.</li>
+            <li><strong>O:</strong> Kamehameha, cần đủ <strong>100 Power</strong>.</li>
+            <li><strong>Enter:</strong> gồng để nạp <strong>Mana</strong> và <strong>Power</strong>.</li>
+            <li><strong>Space:</strong> tuyệt kỹ cuối, cần ít nhất <strong>150 Mana</strong>.</li>
+            <li><strong>Esc:</strong> tạm dừng trận để reset hoặc về menu.</li>
+          </ul>
+        </section>
+
+        <section class="guide-card">
+          <h3>Mobile</h3>
+          <ul class="guide-list">
+            <li><strong>Cụm W / A / S / D:</strong> nhảy, di chuyển, ngồi y như bản PC.</li>
+            <li><strong>Đấm:</strong> tương đương phím <strong>J</strong>.</li>
+            <li><strong>Ki:</strong> tương đương phím <strong>H</strong>, dùng cho chưởng thường, chưởng di động và combo <strong>S + H</strong>.</li>
+            <li><strong>Kame:</strong> tương đương phím <strong>O</strong>.</li>
+            <li><strong>Gồng:</strong> tương đương phím <strong>Enter</strong>.</li>
+            <li><strong>Ult:</strong> tương đương phím <strong>Space</strong> để tung tuyệt kỹ.</li>
+            <li><strong>?</strong> mở lại bảng hướng dẫn bất kỳ lúc nào trong trận.</li>
+            <li><strong>II:</strong> tạm dừng trận, mở menu pause để reset hoặc quay về menu.</li>
+          </ul>
+        </section>
+      </div>
+
+      <p class="guide-note">Mẹo: giữ Gồng trước để nạp tài nguyên, sau đó dùng Ki, Kame hoặc Ult khi thanh đủ điều kiện.</p>
+      <button id="closeGuideBtn" type="button">Đóng</button>
     </div>
   </div>
 
   <div id="pauseModal" class="modal hidden">
     <div class="modal-box">
-      <h2>TẠM DỪNG</h2>
-      <p>BẠN MUỐN VỀ MENU HAY RESET LẠI GAME</p>
-      <p>NHẤN PHÍM ESC ĐỂ ĐỒNG Ý</p>
+      <h2>Tạm dừng</h2>
+      <p>Bạn muốn về menu hay reset lại game?</p>
+      <p>Trên PC có thể bấm <strong>Esc</strong> để tiếp tục chơi.</p>
       <div class="device-buttons">
-        <button id="pauseMenuBtn">Ve Menu</button>
-        <button id="pauseResetBtn">Reset</button>
+        <button id="pauseMenuBtn" type="button">Về Menu</button>
+        <button id="pauseResetBtn" type="button">Reset</button>
       </div>
     </div>
   </div>
 
-  <script src="main.js?v=20260320b"></script>
+  <script src="main.js?v=20260321-mobile-guide"></script>
 </body>
 </html>

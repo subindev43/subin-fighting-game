@@ -10,6 +10,8 @@ const stage2Btn = document.getElementById("stage2Btn");
 const toggleTrainingBotBtn = document.getElementById("toggleTrainingBotBtn");
 const toggleBotSpamBtn = document.getElementById("toggleBotSpamBtn");
 const closeGuideBtn = document.getElementById("closeGuideBtn");
+const openGuideInGameBtn = document.getElementById("openGuideInGameBtn");
+const hudPauseBtn = document.getElementById("hudPauseBtn");
 const pauseMenuBtn = document.getElementById("pauseMenuBtn");
 const pauseResetBtn = document.getElementById("pauseResetBtn");
 const deviceModal = document.getElementById("deviceModal");
@@ -36,7 +38,10 @@ const kameLoopGroundOffsetX = -6;
 const kameLoopGroundOffsetY = 18;
 const entrancePrepFramesDuration = 18;
 const entranceBraceFramesDuration = 22;
-const entranceLoopDurationFrames = 84;
+const entranceLoopBaseDurationFrames = 56;
+const entranceLoopDurationFrames = 156;
+const entranceFlashDurationFrames = 18;
+const entranceSaiyanLoopDurationFrames = 54;
 const entranceZoomTarget = 1.15;
 const entranceZoomEase = 0.12;
 
@@ -161,6 +166,7 @@ if (statusCharacterName) {
 }
 
 const idleFrames = loadFrames(charAsset("player/idle/1_0-"), 4);
+const idleFullPowerFrames = loadFrames(charAsset("player/idle/1_1-"), 4);
 const backFrames = loadFrames(charAsset("back/1_22-"), 4);
 const crouchPrepFrames = loadFramePaths([
   charAsset("crouch/110.png")
@@ -176,6 +182,91 @@ const powerFrames = loadFramePaths([
   charAsset("power/1_200-22.png"),
   charAsset("power/1_200-23.png")
 ]);
+const powerFullFrames = loadFramePaths([
+  charAsset("power/1_200-25.png"),
+  charAsset("power/1_200-26.png")
+]);
+const powerEndFrames = loadFramePaths([
+  charAsset("power/1_200-27.png"),
+  charAsset("power/1_200-28.png")
+]);
+const powerEndFrameDelays = [9, 12];
+const finalSkillIntroFrames = buildSequence(charAsset("finalskill/1_200-"), 31, 33);
+const finalSkillIntroFrameDelays = [14, 16, 18];
+const finalSkillChargeFrames = buildSequence(charAsset("finalskill/1_200-"), 34, 37);
+const finalSkillChargeFrameDelays = [10, 10, 10, 12];
+const finalSkillAuraFrames = buildSequence(charAsset("finalskill/1_553-"), 0, 2);
+const finalSkillShellExpandFrames = buildSequence(charAsset("finalskill/1_361-"), 0, 10);
+const finalSkillShellLoopFrames = buildSequence(charAsset("finalskill/1_361-"), 11, 15);
+const finalSkillShellCollapseFrames = buildSequence(charAsset("finalskill/1_361-"), 16, 39);
+const finalSkillFlashFrames = buildSequence(charAsset("finalskill/1_10000-"), 0, 11);
+const finalSkillRevealBurstFrames = buildSequence(charAsset("finalskill/1_10001-"), 0, 31);
+const finalSkillRevealFrames = buildSequence(charAsset("finalskill/1_400-"), 0, 3);
+const finalSkillBlueChargeFrames = loadFramePaths([
+  charAsset("finalskill/1_200-29.png"),
+  charAsset("finalskill/1_200-30.png")
+]);
+const finalSkillBlueEndFrames = loadFramePaths([
+  charAsset("finalskill/1_200-38.png")
+]);
+const finalSkillComboTeleportPrepFrames = buildSequence(charAsset("finalskill/1_200-"), 3, 4);
+const finalSkillComboTeleportMoveFrames = buildSequence(charAsset("finalskill/1_200-"), 5, 7);
+const finalSkillComboStrikePrepFrames = buildSequence(charAsset("finalskill/1_200-"), 386, 387);
+const finalSkillComboStrikeReadyFrames = loadFramePaths([
+  charAsset("finalskill/1_200-389.png")
+]);
+const finalSkillComboStrikeFrames = buildSequence(charAsset("finalskill/1_200-"), 390, 391);
+const finalSkillComboSecondStrikePrepFrames = buildSequence(charAsset("finalskill/1_200-"), 73, 74);
+const finalSkillComboSecondStrikeReadyFrames = loadFramePaths([
+  charAsset("finalskill/1_200-74.png")
+]);
+const finalSkillComboSecondStrikeFrames = buildSequence(charAsset("finalskill/1_200-"), 75, 76);
+const finalSkillComboSecondStrikeEndFrames = buildSequence(charAsset("finalskill/1_200-"), 77, 78);
+const finalSkillBlueEnergyStartFrames = buildSequence(charAsset("finalskill/1_11039-"), 0, 6);
+const finalSkillBlueEnergyLoopFrames = buildSequence(charAsset("finalskill/1_11039-"), 7, 29);
+const finalSkillBlueEnergyTransformFrames = buildSequence(charAsset("finalskill/1_11039-"), 30, 75);
+const finalSkillPeakBurstFrames = buildSequence(charAsset("finalskill/1_1110-"), 0, 30);
+const finalSkillSsj3HoldFrames = loadFramePaths([
+  charAsset("finalskill/1_400-3.png")
+]);
+const finalSkillKickPrepFrames = buildSequence(charAsset("finalskill/1_400-"), 9, 10);
+const finalSkillKickFrames = buildSequence(charAsset("finalskill/1_400-"), 11, 12);
+const finalSkillKickEndFrames = buildSequence(charAsset("finalskill/1_400-"), 13, 14);
+const finalSkillKameChargeFrames = buildSequence(charAsset("finalskill/1_200-"), 257, 258);
+const finalSkillKamePrepFrames = buildSequence(charAsset("finalskill/1_200-"), 272, 273);
+const finalSkillKameFireFrames = buildSequence(charAsset("finalskill/1_200-"), 275, 276);
+const finalSkillKameEndFrames = loadFramePaths([
+  charAsset("finalskill/1_200-276.png"),
+  charAsset("finalskill/1_200-278.png"),
+  charAsset("finalskill/1_200-278.png")
+]);
+const finalSkillReturnFlashFrames = loadFramePaths([
+  charAsset("finalskill/1_200-2789.png")
+]);
+const finalSkillNoTargetEndFrames = loadFramePaths([
+  charAsset("finalskill/1_200-332 (2).png"),
+  charAsset("finalskill/1_200-332 (2).png")
+]);
+const finalSkillReturnEndFrames = loadFramePaths([
+  charAsset("finalskill/1_200-279.png")
+]);
+const finalSkillKameEffectStartFrames = buildSequence(charAsset("finalskill/1_7202-"), 0, 8);
+const finalSkillKameEffectLoopFrames = buildSequence(charAsset("finalskill/1_7202-"), 9, 12);
+const finalSkillChargeLoopDurationFrames = 300;
+const finalSkillShellLoopDurationFrames = 150;
+const finalSkillManaRequirement = 150;
+const finalSkillTeleportHoldFrames = 20;
+const finalSkillKameFireDurationFrames = 360;
+const finalSkillAirHeight = 200;
+const finalSkillKameEffectWidth = 5000;
+let finalSkillKameOffsetX = 8;
+let finalSkillKameOffsetY = 68;
+const finalSkillKameDebugArrow = false;
+const finalSkillBlueChargeDurationFrames = 420;
+const finalSkillBotParalysisRange = 420;
+const finalSkillComboTriggerDistance = 620;
+const finalSkillKameChargeSound = new Audio(charAsset("finalskill/kame.wav"));
+finalSkillKameChargeSound.preload = "auto";
 const entrancePrepFrames = loadFramePaths([
   charAsset("entrance/1_115-0.png")
 ]);
@@ -186,9 +277,24 @@ const entranceLoopFrames = loadFramePaths([
   charAsset("entrance/1_115-2.png"),
   charAsset("entrance/1_115-3.png")
 ]);
+const entranceSaiyanLoopFrames = loadFramePaths([
+  charAsset("entrance/1_200-22.png"),
+  charAsset("entrance/1_200-23.png")
+]);
+const entranceSaiyanEndFrames = loadFramePaths([
+  charAsset("entrance/1_200-22.png"),
+  charAsset("entrance/1_200-23.png"),
+  charAsset("entrance/1_200-24.png")
+]);
+const entranceSaiyanEndFrameDelays = [9, 9, 18];
+const entranceChargeDustFrames = buildSequence(charAsset("entrance/1_20-"), 4, 9);
+const entranceSurgeFrames = buildSequence(charAsset("entrance/1_465-"), 0, 24);
+const entranceWhiteAuraFrames = buildSequence(charAsset("entrance/1_1500-"), 0, 3);
+const entranceGoldAuraFrames = buildSequence(charAsset("entrance/1_550-"), 0, 3);
 const powerReleaseFrames = loadFramePaths([
   charAsset("power/1_200-24.png")
 ]);
+const powerGoldThreshold = 100;
 const attackFrames = loadFramePaths([
   charAsset("attack/1.png"),
   charAsset("attack/2.png"),
@@ -206,6 +312,7 @@ const attackFrames = loadFramePaths([
   charAsset("attack/14.png")
 ]);
 const attackFrameDelays = [11, 11, 7, 7, 10, 7, 7, 7, 10, 10, 9, 7, 7, 9];
+const attackHitEffectFrames = buildSequence(charAsset("attack/1_8009-"), 0, 3);
 const walkKickFrames = loadFramePaths([
   charAsset("dichuyenda/1_200-253.png"),
   charAsset("dichuyenda/1_200-254.png"),
@@ -213,12 +320,14 @@ const walkKickFrames = loadFramePaths([
   charAsset("dichuyenda/1_200-256.png")
 ]);
 const walkKickFrameDelays = [8, 9, 9, 10];
+const walkKickHitEffectFrames = buildSequence(charAsset("dichuyenda/1_8009-"), 0, 3);
 const runAttackFrames = loadFramePaths([
   charAsset("runattack/1_200-60.png"),
   charAsset("runattack/1_200-61.png"),
   charAsset("runattack/1_200-59.png")
 ]);
 const runAttackFrameDelays = [5, 8, 10];
+const runAttackHitEffectFrames = buildSequence(charAsset("runattack/1_8009-"), 0, 3);
 const backAttackFrames = loadFramePaths([
   charAsset("luiattack/1_200-63.png"),
   charAsset("luiattack/1_200-64.png"),
@@ -227,6 +336,7 @@ const backAttackFrames = loadFramePaths([
   charAsset("luiattack/1_200-67.png")
 ]);
 const backAttackFrameDelays = [9, 9, 10, 10, 8];
+const backAttackHitEffectFrames = buildSequence(charAsset("luiattack/1_8009-"), 0, 3);
 const backKickSkillFrames = loadFramePaths([
   charAsset("shutlui/1_200-136.png"),
   charAsset("shutlui/1_200-137.png"),
@@ -235,6 +345,7 @@ const backKickSkillFrames = loadFramePaths([
   charAsset("shutlui/1_200-140.png")
 ]);
 const backKickSkillFrameDelays = [15, 15, 10, 10, 18];
+const backKickSkillHitEffectFrames = buildSequence(charAsset("shutlui/1_8009-"), 0, 3);
 const kiBlastFrames = loadFramePaths([
   charAsset("chuong1/1.png"),
   charAsset("chuong1/2.png"),
@@ -249,10 +360,44 @@ const kiBlastFrames = loadFramePaths([
   charAsset("chuong1/11.png")
 ]);
 const kiBlastFrameDelays = [12, 12, 12, 8, 8, 10, 12, 10, 10, 9, 9];
+const teleportPrepFrames = loadFramePaths([
+  charAsset("tele/1_200-8.png"),
+  charAsset("tele/1_200-9.png")
+]);
+const teleportPrepFrameDelays = [10, 10];
+const teleportMoveFrames = loadFramePaths([
+  charAsset("tele/1_200-10.png"),
+  charAsset("tele/1_200-11.png"),
+  charAsset("tele/1_200-12.png")
+]);
+const teleportMoveFrameDelays = [5, 5, 6];
+const teleportDistance = 240;
+const teleportPowerCost = 5;
+const goldKiBlastPowerCost = 30;
+const goldKiBlastPrepFrames = buildSequence(charAsset("chuong2/1_200-"), 334, 336);
+const goldKiBlastPrepFrameDelays = [12, 12, 14];
+const goldKiBlastFireFrames = loadFramePaths([
+  charAsset("chuong2/1_200-360.png"),
+  charAsset("chuong2/1_200-361.png")
+]);
+const goldKiBlastFireFrameDelays = [15, 18];
+const goldKiBlastLoopDurationFrames = 126;
+const goldKiBlastEndFrames = loadFramePaths([
+  charAsset("chuong2/1_200-175.png"),
+  charAsset("chuong2/1_200-175.png"),
+  charAsset("chuong2/1_200-175.png"),
+  charAsset("chuong2/1_200-181.png"),
+  charAsset("chuong2/1_200-181.png")
+]);
+const goldKiBlastEndFrameDelays = [8, 8, 10, 12, 16];
+const goldKiBlastProjectileFrames = buildSequence(charAsset("chuong2/1_1516-"), 0, 3);
+const enemySkillHitFrames = buildSequence(charAsset("chuong2/1_8010-"), 0, 3);
+const finalSkillBotHitFrames = buildSequence(charAsset("finalskill/1_8009-"), 0, 3);
+const finalSkillBotSecondHitFrames = buildSequence(charAsset("finalskill/1_9009-"), 0, 7);
+const finalSkillKameStickFrames = buildSequence(charAsset("finalskill/1_8011-"), 0, 3);
 const kiBlastProjectileFrames = buildSequence(charAsset("chuong1/1_1010-"), 0, 15);
 const kiBlastShootEffectFrames = buildSequence(charAsset("chuong1/1_1577-"), 0, 7);
-const kiBlastImpactFrames = buildSequence(charAsset("chuong1/1_420-"), 0, 7);
-const kiBlastImpactGlowFrames = buildSequence(charAsset("chuong1/1_420-"), 8, 15);
+const kiBlastImpactFrames = buildSequence(charAsset("chuong1/1_11017-"), 0, 10);
 const attackJumpFrames = loadFramePaths([
   charAsset("attackjump/1.png"),
   charAsset("attackjump/2.png"),
@@ -260,6 +405,7 @@ const attackJumpFrames = loadFramePaths([
   charAsset("attackjump/5.png")
 ]);
 const attackJumpFrameDelays = [13, 12, 10, 10];
+const attackJumpHitEffectFrames = buildSequence(charAsset("attackjump/1_8009-"), 0, 3);
 const attackJumpFrameOffsets = [
   { x: 0, y: 0 },
   { x: 0, y: 0 },
@@ -270,6 +416,11 @@ const damageFrames = buildSequence(charAsset("damage/1_6000-"), 0, 4);
 const damageFrameDelays = [7, 7, 8, 8, 10];
 const outFrames = loadFramePaths([
   charAsset("out/1.png"),
+  charAsset("out/2.png"),
+  charAsset("out/3.png")
+]);
+const botOutFrames = loadFramePaths([
+  charAsset("out/2.png"),
   charAsset("out/2.png"),
   charAsset("out/3.png")
 ]);
@@ -483,6 +634,12 @@ const player = {
   kiBlastCooldown: 0,
   kiBlastHasFired: false,
   kiBlastShotsFired: 0,
+  teleportPhase: "idle",
+  teleportShiftX: 0,
+  teleportHasMoved: false,
+  kiBlastVariant: "default",
+  goldKiBlastPhase: "idle",
+  goldKiBlastLoopTimer: 0,
   kiBlastMoveAction: "idle",
   jumpPrepTimer: 0,
   crouchPrepTimer: 0,
@@ -493,6 +650,17 @@ const player = {
   isDown: false,
   powerPrepTimer: 0,
   powerReleaseTimer: 0,
+  powerFullCharge: false,
+  finalSkillPhase: "idle",
+  finalSkillChargeLoopTimer: 0,
+  finalSkillShellLoopTimer: 0,
+  finalSkillComboTimer: 0,
+  finalSkillTeleportShiftX: 0,
+  finalSkillTeleportHasMoved: false,
+  finalSkillHitApplied: false,
+  finalSkillFallSpeed: 0,
+  finalSkillOriginWorldX: 0,
+  finalSkillOriginDirection: 1,
   entranceTimer: 0,
   entrancePhase: "idle",
   kamehamehaTimer: 0,
@@ -511,9 +679,9 @@ const player = {
   health: 100,
   maxHealth: 100,
   mana: 0,
-  maxMana: 100,
+  maxMana: 200,
   power: 0,
-  maxPower: 100,
+  maxPower: 200,
   attackHasHit: false
 };
 
@@ -542,6 +710,8 @@ const trainingBot = {
   delayedHealth: 220,
   healthDamageDelay: 0,
   runBurstPlayed: false,
+  finalSkillHeld: false,
+  finalSkillHoldY: null,
   isDown: false,
   isActive: true
 };
@@ -549,6 +719,8 @@ const spamBots = [];
 let trainingBotEnabled = true;
 let botSpamEnabled = false;
 let nextSpamBotWorldX = 1560;
+const botSpamStartDelayFrames = 540;
+let botSpamDelayTimer = botSpamStartDelayFrames;
 let playerHitCooldown = 0;
 
 const dustParticles = [];
@@ -559,6 +731,79 @@ const kiBlastProjectiles = [];
 const kiBlastShootEffects = [];
 const kiBlastImpactEffects = [];
 const kameHitEffects = [];
+const enemySkillHitEffects = [];
+const finalSkillBotHitEffects = [];
+const goldKiBlastLoopEffect = {
+  active: false,
+  frameIndex: 0,
+  frameTimer: 0,
+  frameDelay: 4,
+  alpha: 0,
+  targetAlpha: 0,
+  scale: 1
+};
+const finalSkillAuraEffect = {
+  active: false,
+  frameIndex: 0,
+  frameTimer: 0,
+  frameDelay: 4,
+  alpha: 0,
+  targetAlpha: 0,
+  scale: 1
+};
+const finalSkillShellEffect = {
+  active: false,
+  phase: "idle",
+  frameIndex: 0,
+  frameTimer: 0,
+  frameDelay: 3,
+  alpha: 0,
+  scale: 1
+};
+const finalSkillFlashEffect = {
+  active: false,
+  frameIndex: 0,
+  frameTimer: 0,
+  frameDelay: 2,
+  alpha: 0,
+  overlayAlpha: 0,
+  overlayHoldTimer: 0,
+  overlayFadeTimer: 0,
+  overlayHoldDuration: 10,
+  overlayFadeDuration: 18
+};
+const finalSkillRevealBurstEffect = {
+  active: false,
+  frameIndex: 0,
+  frameTimer: 0,
+  frameDelay: 2,
+  alpha: 0,
+  fadeOut: false
+};
+const finalSkillKameEffect = {
+  active: false,
+  phase: "start",
+  frameIndex: 0,
+  frameTimer: 0,
+  frameDelay: 2,
+  alpha: 0
+};
+const finalSkillBlueEnergyEffect = {
+  active: false,
+  phase: "idle",
+  frameIndex: 0,
+  frameTimer: 0,
+  frameDelay: 2,
+  alpha: 0
+};
+const finalSkillPeakBurstEffect = {
+  active: false,
+  frameIndex: 0,
+  frameTimer: 0,
+  frameDelay: 2,
+  alpha: 0
+};
+let finalSkillTargetBot = null;
 const auraEffect = {
   frameIndex: 0,
   frameTimer: 0,
@@ -598,6 +843,34 @@ const aura4Effect = {
   driftX: 0,
   driftY: 0
 };
+const entranceAuraEffect = {
+  frameIndex: 0,
+  frameTimer: 0,
+  frameDelay: 4,
+  alpha: 0,
+  targetAlpha: 0,
+  scale: 0.92,
+  targetScale: 0.92,
+  mode: "idle",
+  previousMode: "idle"
+};
+const entranceSurgeEffect = {
+  active: false,
+  frameIndex: 0,
+  frameTimer: 0,
+  frameDelay: 3,
+  alpha: 0,
+  scale: 1,
+  pulse: 0
+};
+const entranceChargeDustEffect = {
+  active: false,
+  frameIndex: 0,
+  frameTimer: 0,
+  frameDelay: 4,
+  alpha: 0,
+  scale: 1
+};
 const powerLightningEffect = {
   active: false,
   frameIndex: 0,
@@ -634,6 +907,10 @@ const kameFireEffect = {
 };
 const kameDamagePerTick = 3;
 const kameDamageTickFrames = 6;
+const finalSkillKameDamagePerTick = 6;
+const finalSkillKameDamageTickFrames = 5;
+const goldKiBlastDamagePerTick = 4;
+const goldKiBlastDamageTickFrames = 5;
 const cameraShake = {
   x: 0,
   y: 0,
@@ -702,6 +979,12 @@ const initialPlayerState = {
   kiBlastCooldown: 0,
   kiBlastHasFired: false,
   kiBlastShotsFired: 0,
+  teleportPhase: "idle",
+  teleportShiftX: 0,
+  teleportHasMoved: false,
+  kiBlastVariant: "default",
+  goldKiBlastPhase: "idle",
+  goldKiBlastLoopTimer: 0,
   kiBlastMoveAction: "idle",
   jumpPrepTimer: 0,
   crouchPrepTimer: 0,
@@ -712,6 +995,17 @@ const initialPlayerState = {
   isDown: false,
   powerPrepTimer: 0,
   powerReleaseTimer: 0,
+  powerFullCharge: false,
+  finalSkillPhase: "idle",
+  finalSkillChargeLoopTimer: 0,
+  finalSkillShellLoopTimer: 0,
+  finalSkillComboTimer: 0,
+  finalSkillTeleportShiftX: 0,
+  finalSkillTeleportHasMoved: false,
+  finalSkillHitApplied: false,
+  finalSkillFallSpeed: 0,
+  finalSkillOriginWorldX: 0,
+  finalSkillOriginDirection: 1,
   entranceTimer: 0,
   entrancePhase: "idle",
   kamehamehaTimer: 0,
@@ -760,6 +1054,8 @@ function createBot(worldX, maxHealth = 120) {
     delayedHealth: maxHealth,
     healthDamageDelay: 0,
     runBurstPlayed: false,
+    finalSkillHeld: false,
+    finalSkillHoldY: null,
     isDown: false,
     isActive: true
   };
@@ -771,6 +1067,70 @@ function getPlayerWorldX() {
 
 function getBotScreenX(bot) {
   return bot.worldX - stageScrollX;
+}
+
+function getActiveCombatBots() {
+  const bots = [];
+  if (trainingBotEnabled && trainingBot.isActive && !trainingBot.isDown) {
+    bots.push(trainingBot);
+  }
+  for (const bot of spamBots) {
+    if (bot.isActive && !bot.isDown) {
+      bots.push(bot);
+    }
+  }
+  return bots;
+}
+
+function getFinalSkillTargetBot() {
+  const activeBots = getActiveCombatBots();
+  if (activeBots.length === 0) return null;
+
+  const playerWorldX = getPlayerWorldX();
+  activeBots.sort((a, b) => Math.abs(a.worldX - playerWorldX) - Math.abs(b.worldX - playerWorldX));
+  return activeBots[0];
+}
+
+function canTriggerFinalSkillCombo(bot) {
+  if (!bot || !bot.isActive || bot.isDown) return false;
+  const playerWorldX = getPlayerWorldX();
+  return Math.abs(bot.worldX - playerWorldX) <= finalSkillComboTriggerDistance;
+}
+
+function setFinalSkillParalysis(active) {
+  const playerWorldX = getPlayerWorldX();
+  for (const bot of getActiveCombatBots()) {
+    if (!active || Math.abs(bot.worldX - playerWorldX) > finalSkillBotParalysisRange) {
+      if (bot.finalSkillHeld) {
+        bot.finalSkillHeld = false;
+        bot.finalSkillHoldY = null;
+      }
+      continue;
+    }
+
+    bot.finalSkillHeld = true;
+    bot.finalSkillHoldY = bot.y;
+    bot.vx = 0;
+    bot.vy = 0;
+    if (bot.action !== "out" && bot.action !== "damage") {
+      bot.action = "idle";
+      bot.frameIndex = 0;
+      bot.frameTimer = 0;
+    }
+  }
+}
+
+function releaseAllFinalSkillParalysis() {
+  if (trainingBot.finalSkillHeld) {
+    trainingBot.finalSkillHeld = false;
+    trainingBot.finalSkillHoldY = null;
+  }
+  for (const bot of spamBots) {
+    if (bot.finalSkillHeld) {
+      bot.finalSkillHeld = false;
+      bot.finalSkillHoldY = null;
+    }
+  }
 }
 
 function updateBotMenuButtons() {
@@ -795,6 +1155,9 @@ function resetControls() {
   keys.w = false;
   keys.h = false;
   attackInputLocked = false;
+  for (const button of touchButtons) {
+    button.classList.remove("is-active");
+  }
 }
 
 function resetGameState() {
@@ -822,12 +1185,17 @@ function resetGameState() {
     attackCooldown: 0,
     dustCooldown: 0,
     runBurstPlayed: false,
+    finalSkillHeld: false,
+    finalSkillHoldY: null,
     isDown: false,
     isActive: trainingBotEnabled
   });
   spamBots.length = 0;
   nextSpamBotWorldX = 1560;
+  botSpamDelayTimer = botSpamStartDelayFrames;
   playerHitCooldown = 0;
+  finalSkillKameChargeSound.pause();
+  finalSkillKameChargeSound.currentTime = 0;
   if (healthDamageDelayTimer) {
     clearTimeout(healthDamageDelayTimer);
     healthDamageDelayTimer = null;
@@ -840,6 +1208,14 @@ function resetGameState() {
   kiBlastProjectiles.length = 0;
   kiBlastShootEffects.length = 0;
   kiBlastImpactEffects.length = 0;
+  enemySkillHitEffects.length = 0;
+  finalSkillBotHitEffects.length = 0;
+  goldKiBlastLoopEffect.active = false;
+  goldKiBlastLoopEffect.frameIndex = 0;
+  goldKiBlastLoopEffect.frameTimer = 0;
+  goldKiBlastLoopEffect.alpha = 0;
+  goldKiBlastLoopEffect.targetAlpha = 0;
+  goldKiBlastLoopEffect.scale = 1;
   auraEffect.frameIndex = 0;
   auraEffect.frameTimer = 0;
   auraEffect.alpha = 0;
@@ -867,6 +1243,25 @@ function resetGameState() {
   aura4Effect.scale = 1;
   aura4Effect.driftX = 0;
   aura4Effect.driftY = 0;
+  entranceAuraEffect.frameIndex = 0;
+  entranceAuraEffect.frameTimer = 0;
+  entranceAuraEffect.alpha = 0;
+  entranceAuraEffect.targetAlpha = 0;
+  entranceAuraEffect.scale = 0.92;
+  entranceAuraEffect.targetScale = 0.92;
+  entranceAuraEffect.mode = "idle";
+  entranceAuraEffect.previousMode = "idle";
+  entranceSurgeEffect.active = false;
+  entranceSurgeEffect.frameIndex = 0;
+  entranceSurgeEffect.frameTimer = 0;
+  entranceSurgeEffect.alpha = 0;
+  entranceSurgeEffect.scale = 1;
+  entranceSurgeEffect.pulse = 0;
+  entranceChargeDustEffect.active = false;
+  entranceChargeDustEffect.frameIndex = 0;
+  entranceChargeDustEffect.frameTimer = 0;
+  entranceChargeDustEffect.alpha = 0;
+  entranceChargeDustEffect.scale = 1;
   powerLightningEffect.active = false;
   powerLightningEffect.frameIndex = 0;
   powerLightningEffect.frameTimer = 0;
@@ -884,6 +1279,45 @@ function resetGameState() {
   kameFireEffect.frameIndex = 0;
   kameFireEffect.frameTimer = 0;
   kameFireEffect.alpha = 0;
+  finalSkillTargetBot = null;
+  finalSkillKameEffect.active = false;
+  finalSkillKameEffect.phase = "start";
+  finalSkillKameEffect.frameIndex = 0;
+  finalSkillKameEffect.frameTimer = 0;
+  finalSkillKameEffect.alpha = 0;
+  finalSkillBlueEnergyEffect.active = false;
+  finalSkillBlueEnergyEffect.phase = "idle";
+  finalSkillBlueEnergyEffect.frameIndex = 0;
+  finalSkillBlueEnergyEffect.frameTimer = 0;
+  finalSkillBlueEnergyEffect.alpha = 0;
+  finalSkillPeakBurstEffect.active = false;
+  finalSkillPeakBurstEffect.frameIndex = 0;
+  finalSkillPeakBurstEffect.frameTimer = 0;
+  finalSkillPeakBurstEffect.alpha = 0;
+  finalSkillRevealBurstEffect.active = false;
+  finalSkillRevealBurstEffect.frameIndex = 0;
+  finalSkillRevealBurstEffect.frameTimer = 0;
+  finalSkillRevealBurstEffect.alpha = 0;
+  finalSkillRevealBurstEffect.fadeOut = false;
+  finalSkillFlashEffect.active = false;
+  finalSkillFlashEffect.frameIndex = 0;
+  finalSkillFlashEffect.frameTimer = 0;
+  finalSkillFlashEffect.alpha = 0;
+  finalSkillFlashEffect.overlayAlpha = 0;
+  finalSkillFlashEffect.overlayHoldTimer = 0;
+  finalSkillFlashEffect.overlayFadeTimer = 0;
+  finalSkillAuraEffect.active = false;
+  finalSkillAuraEffect.frameIndex = 0;
+  finalSkillAuraEffect.frameTimer = 0;
+  finalSkillAuraEffect.alpha = 0;
+  finalSkillAuraEffect.targetAlpha = 0;
+  finalSkillAuraEffect.scale = 1;
+  finalSkillShellEffect.active = false;
+  finalSkillShellEffect.phase = "idle";
+  finalSkillShellEffect.frameIndex = 0;
+  finalSkillShellEffect.frameTimer = 0;
+  finalSkillShellEffect.alpha = 0;
+  finalSkillShellEffect.scale = 1;
   cameraShake.x = 0;
   cameraShake.y = 0;
   cameraShake.strength = 0;
@@ -929,8 +1363,35 @@ function closePauseMenu() {
   }
 }
 
+function openGuideModal(options = {}) {
+  if (!guideModal) return;
+  const pauseGame = Boolean(options.pauseGame && gameStarted);
+  if (pauseGame) {
+    isPauseMenuOpen = true;
+    resetControls();
+    if (pauseModal) {
+      pauseModal.classList.add("hidden");
+    }
+  }
+  guideModal.dataset.pauseGame = pauseGame ? "true" : "false";
+  guideModal.classList.remove("hidden");
+}
+
+function closeGuideModal(options = {}) {
+  if (!guideModal) return;
+  const shouldResumeGame = guideModal.dataset.pauseGame === "true" && options.resumeGame !== false;
+  guideModal.classList.add("hidden");
+  guideModal.dataset.pauseGame = "false";
+  if (shouldResumeGame) {
+    isPauseMenuOpen = false;
+  }
+}
+
 function openPauseMenu() {
   if (!gameStarted) return;
+  if (guideModal && !guideModal.classList.contains("hidden")) {
+    closeGuideModal({ resumeGame: false });
+  }
   isPauseMenuOpen = true;
   resetControls();
   if (pauseModal) {
@@ -944,9 +1405,7 @@ function returnToMenu() {
   resetGameState();
   gameScreen.classList.add("hidden");
   menuScreen.classList.remove("hidden");
-  if (guideModal) {
-    guideModal.classList.add("hidden");
-  }
+  closeGuideModal({ resumeGame: false });
   if (deviceModal) {
     deviceModal.classList.add("hidden");
   }
@@ -986,7 +1445,11 @@ function startGameWithMode(mode) {
 }
 
 function triggerJump() {
-  if (player.action === "damage" || player.action === "out") return;
+  if (
+    player.action === "damage" ||
+    player.action === "out" ||
+    player.action === "kamehameha"
+  ) return;
   const now = Date.now();
   const isDoubleTapW = now - lastWPressTime <= doubleTapDelay;
   lastWPressTime = now;
@@ -1030,7 +1493,9 @@ function canStartAttack() {
     player.action !== "backKickSkill" &&
     player.action !== "runAttack" &&
     player.action !== "attackJump" &&
-    player.action !== "walkKick";
+    player.action !== "walkKick" &&
+    player.action !== "goldKiBlast" &&
+    player.action !== "teleport";
 }
 
 function startAttack() {
@@ -1098,7 +1563,9 @@ function canStartKiBlast() {
     player.action !== "runAttack" &&
     player.action !== "attackJump" &&
     player.action !== "walkKick" &&
-    player.action !== "kiBlast";
+    player.action !== "kiBlast" &&
+    player.action !== "goldKiBlast" &&
+    player.action !== "teleport";
 }
 
 function canStartKamehameha() {
@@ -1117,7 +1584,98 @@ function canStartKamehameha() {
     player.action !== "attackJump" &&
     player.action !== "walkKick" &&
     player.action !== "kiBlast" &&
+    player.action !== "goldKiBlast" &&
+    player.action !== "teleport" &&
     player.action !== "kamehameha";
+}
+
+function canStartFinalSkill() {
+  return !player.isJumping &&
+    player.jumpPrepTimer === 0 &&
+    player.crouchPrepTimer === 0 &&
+    player.powerPrepTimer === 0 &&
+    player.powerReleaseTimer === 0 &&
+    player.kamehamehaTimer === 0 &&
+    player.kiBlastCooldown === 0 &&
+    player.mana >= finalSkillManaRequirement &&
+    player.action !== "powerPrep" &&
+    player.action !== "power" &&
+    player.action !== "powerEnd" &&
+    player.action !== "damage" &&
+    player.action !== "out" &&
+    player.action !== "attack" &&
+    player.action !== "backAttack" &&
+    player.action !== "backKickSkill" &&
+    player.action !== "runAttack" &&
+    player.action !== "attackJump" &&
+    player.action !== "walkKick" &&
+    player.action !== "kiBlast" &&
+    player.action !== "goldKiBlast" &&
+    player.action !== "teleport" &&
+    player.action !== "kamehameha" &&
+    player.action !== "finalSkill";
+}
+
+function startFinalSkill() {
+  if (!canStartFinalSkill()) return;
+
+  player.attackHasHit = false;
+  player.vx = 0;
+  player.vy = 0;
+  player.isRunning = false;
+  player.finalSkillPhase = "intro";
+  player.finalSkillChargeLoopTimer = finalSkillChargeLoopDurationFrames;
+  player.finalSkillShellLoopTimer = finalSkillShellLoopDurationFrames;
+  player.finalSkillComboTimer = 0;
+  player.finalSkillTeleportShiftX = 0;
+  player.finalSkillTeleportHasMoved = false;
+  player.finalSkillHitApplied = false;
+  player.finalSkillFallSpeed = 0;
+  player.finalSkillOriginWorldX = getPlayerWorldX();
+  player.finalSkillOriginDirection = player.direction;
+  player.action = "finalSkill";
+  player.frameIndex = 0;
+  player.frameTimer = 0;
+  finalSkillTargetBot = getFinalSkillTargetBot();
+
+  finalSkillAuraEffect.active = false;
+  finalSkillAuraEffect.frameIndex = 0;
+  finalSkillAuraEffect.frameTimer = 0;
+  finalSkillAuraEffect.alpha = 0;
+  finalSkillAuraEffect.targetAlpha = 0;
+  finalSkillAuraEffect.scale = 1;
+  finalSkillShellEffect.active = false;
+  finalSkillShellEffect.phase = "idle";
+  finalSkillShellEffect.frameIndex = 0;
+  finalSkillShellEffect.frameTimer = 0;
+  finalSkillShellEffect.alpha = 0;
+  finalSkillShellEffect.scale = 1;
+  finalSkillFlashEffect.active = false;
+  finalSkillFlashEffect.frameIndex = 0;
+  finalSkillFlashEffect.frameTimer = 0;
+  finalSkillFlashEffect.alpha = 0;
+  finalSkillFlashEffect.overlayAlpha = 0;
+  finalSkillFlashEffect.overlayHoldTimer = 0;
+  finalSkillFlashEffect.overlayFadeTimer = 0;
+  finalSkillRevealBurstEffect.active = true;
+  finalSkillRevealBurstEffect.frameIndex = 0;
+  finalSkillRevealBurstEffect.frameTimer = 0;
+  finalSkillRevealBurstEffect.alpha = 1;
+  finalSkillRevealBurstEffect.fadeOut = false;
+  finalSkillBlueEnergyEffect.active = false;
+  finalSkillBlueEnergyEffect.phase = "idle";
+  finalSkillBlueEnergyEffect.frameIndex = 0;
+  finalSkillBlueEnergyEffect.frameTimer = 0;
+  finalSkillBlueEnergyEffect.alpha = 0;
+  finalSkillPeakBurstEffect.active = false;
+  finalSkillPeakBurstEffect.frameIndex = 0;
+  finalSkillPeakBurstEffect.frameTimer = 0;
+  finalSkillPeakBurstEffect.alpha = 0;
+  finalSkillKameEffect.active = false;
+  finalSkillKameEffect.phase = "start";
+  finalSkillKameEffect.frameIndex = 0;
+  finalSkillKameEffect.frameTimer = 0;
+  finalSkillKameEffect.alpha = 0;
 }
 
 function startKamehameha() {
@@ -1200,6 +1758,7 @@ function spawnKiBlastProjectile() {
   kiBlastShootEffects.push({
     worldX: spawnWorldX,
     y: spawnY,
+    type: "kiBlast",
     direction: projectileDirection,
     frameIndex: 0,
     frameTimer: 0,
@@ -1210,8 +1769,11 @@ function spawnKiBlastProjectile() {
 
 function startKiBlast() {
   if (!canStartKiBlast()) return;
+  const useTeleport = keys.s && teleportPrepFrames.length > 0;
+  const useMovementKiBlast = !keys.s && (keys.a || keys.d);
+  const useGoldKiBlast = !keys.s && !useMovementKiBlast && goldKiBlastPrepFrames.length > 0;
 
-  if (keys.a && !player.isJumping && backKickSkillFrames.length > 0) {
+  if (!useTeleport && !useMovementKiBlast && keys.a && !player.isJumping && backKickSkillFrames.length > 0) {
     keys.h = true;
     player.attackHasHit = false;
     player.vx = 0;
@@ -1222,7 +1784,7 @@ function startKiBlast() {
     return;
   }
 
-  if (player.power < kiBlastPowerCost) {
+  if (player.power < (useTeleport ? teleportPowerCost : useGoldKiBlast ? goldKiBlastPowerCost : kiBlastPowerCost)) {
     return;
   }
 
@@ -1230,8 +1792,17 @@ function startKiBlast() {
   player.attackHasHit = false;
   player.kiBlastHasFired = false;
   player.kiBlastShotsFired = 0;
-  player.kiBlastCooldown = 28;
-  player.power = Math.max(0, player.power - kiBlastPowerCost);
+  player.teleportPhase = useTeleport ? "prep" : "idle";
+  player.teleportShiftX = useTeleport ? (keys.d ? teleportDistance : keys.a ? -teleportDistance : 0) : 0;
+  player.teleportHasMoved = false;
+  player.kiBlastVariant = useGoldKiBlast ? "gold" : "default";
+  player.goldKiBlastPhase = useGoldKiBlast ? "prep" : "idle";
+  player.goldKiBlastLoopTimer = 0;
+  player.kiBlastCooldown = useTeleport ? 24 : useGoldKiBlast ? 36 : 28;
+  player.power = Math.max(
+    0,
+    player.power - (useTeleport ? teleportPowerCost : useGoldKiBlast ? goldKiBlastPowerCost : kiBlastPowerCost)
+  );
   player.kiBlastMoveAction = keys.d
     ? (player.isRunning ? "run" : "walk")
     : keys.a
@@ -1239,7 +1810,7 @@ function startKiBlast() {
       : "idle";
   player.vx = 0;
   player.isRunning = false;
-  player.action = "kiBlast";
+  player.action = useTeleport ? "teleport" : useGoldKiBlast ? "goldKiBlast" : "kiBlast";
   player.frameIndex = 0;
   player.frameTimer = 0;
 }
@@ -1247,6 +1818,12 @@ function startKiBlast() {
 function finishKiBlast() {
   player.kiBlastHasFired = false;
   player.kiBlastShotsFired = 0;
+  player.kiBlastVariant = "default";
+  player.goldKiBlastPhase = "idle";
+  player.goldKiBlastLoopTimer = 0;
+  player.teleportPhase = "idle";
+  player.teleportShiftX = 0;
+  player.teleportHasMoved = false;
   keys.h = false;
   player.vx = 0;
   player.isRunning = false;
@@ -1288,7 +1865,15 @@ function pressControl(control) {
     return;
   }
 
-  if (player.action === "kiBlast") {
+  if (player.action === "kiBlast" || player.action === "goldKiBlast" || player.action === "teleport") {
+    return;
+  }
+
+  if (player.action === "kamehameha") {
+    return;
+  }
+
+  if (player.action === "finalSkill") {
     return;
   }
 
@@ -1327,6 +1912,11 @@ function pressControl(control) {
 
   if (control === "o") {
     startKamehameha();
+    return;
+  }
+
+  if (control === "space") {
+    startFinalSkill();
     return;
   }
 
@@ -1382,6 +1972,10 @@ function releaseControl(control) {
 
   if (control === "enter") {
     keys.enter = false;
+  }
+
+  if (control === "space") {
+    return;
   }
 }
 
@@ -1657,6 +2251,13 @@ function updateAuraEffect() {
     player.action === "powerPrep" ||
     player.action === "power" ||
     player.action === "powerRelease";
+  const shouldShowEntranceAura =
+    player.action === "entrance" &&
+    (player.entrancePhase === "loopBase" ||
+      player.entrancePhase === "loop" ||
+      player.entrancePhase === "flash" ||
+      player.entrancePhase === "ssj" ||
+      player.entrancePhase === "ssjEnd");
   const enteredPowerRelease =
     player.action === "powerRelease" && player.previousAction !== "powerRelease";
 
@@ -1793,6 +2394,133 @@ function updateAuraEffect() {
       aura4Effect.driftY = 0;
     }
   }
+
+  entranceAuraEffect.previousMode = entranceAuraEffect.mode;
+
+  if (player.action === "entrance") {
+    if (player.entrancePhase === "loopBase") {
+      entranceAuraEffect.mode = "white";
+      entranceAuraEffect.targetAlpha = 0.34;
+      entranceAuraEffect.targetScale = 0.93;
+    } else if (player.entrancePhase === "loop") {
+      const surgeCycle = Math.floor((entranceLoopDurationFrames - player.entranceTimer) / 6);
+      entranceAuraEffect.mode = surgeCycle % 2 === 0 ? "white" : "gold";
+      entranceAuraEffect.targetAlpha = entranceAuraEffect.mode === "gold" ? 0.9 : 0.82;
+      entranceAuraEffect.targetScale = entranceAuraEffect.mode === "gold" ? 1.01 : 0.97;
+    } else if (player.entrancePhase === "flash") {
+      const flashCycle = Math.floor((entranceFlashDurationFrames - player.entranceTimer) / 3);
+      entranceAuraEffect.mode = flashCycle % 2 === 0 ? "white" : "gold";
+      entranceAuraEffect.targetAlpha = 0.97;
+      entranceAuraEffect.targetScale = entranceAuraEffect.mode === "gold" ? 1.04 : 1;
+    } else if (player.entrancePhase === "ssj" || player.entrancePhase === "ssjEnd") {
+      entranceAuraEffect.mode = "gold";
+      entranceAuraEffect.targetAlpha = 0.98;
+      entranceAuraEffect.targetScale = 1.05;
+    } else {
+      entranceAuraEffect.mode = "idle";
+      entranceAuraEffect.targetAlpha = 0;
+      entranceAuraEffect.targetScale = 0.92;
+    }
+  } else {
+    entranceAuraEffect.mode = "idle";
+    entranceAuraEffect.targetAlpha = 0;
+    entranceAuraEffect.targetScale = 0.92;
+  }
+
+  entranceAuraEffect.alpha += (entranceAuraEffect.targetAlpha - entranceAuraEffect.alpha) * 0.18;
+  entranceAuraEffect.scale += (entranceAuraEffect.targetScale - entranceAuraEffect.scale) * 0.2;
+
+  if (entranceAuraEffect.alpha < 0.02) {
+    entranceAuraEffect.alpha = 0;
+  }
+
+  if (entranceAuraEffect.mode !== entranceAuraEffect.previousMode) {
+    entranceAuraEffect.frameIndex = 0;
+    entranceAuraEffect.frameTimer = 0;
+  }
+
+  if (shouldShowEntranceAura) {
+    const activeEntranceAuraFrames =
+      entranceAuraEffect.mode === "gold" ? entranceGoldAuraFrames : entranceWhiteAuraFrames;
+
+    if (activeEntranceAuraFrames.length > 0) {
+      entranceAuraEffect.frameTimer++;
+      if (entranceAuraEffect.frameTimer >= entranceAuraEffect.frameDelay) {
+        entranceAuraEffect.frameTimer = 0;
+        entranceAuraEffect.frameIndex =
+          (entranceAuraEffect.frameIndex + 1) % activeEntranceAuraFrames.length;
+      }
+    }
+  } else {
+    entranceAuraEffect.frameIndex = 0;
+    entranceAuraEffect.frameTimer = 0;
+  }
+
+  const shouldShowEntranceChargeDust =
+    player.action === "entrance" &&
+    (player.entrancePhase === "loopBase" ||
+      player.entrancePhase === "loop" ||
+      player.entrancePhase === "flash" ||
+      player.entrancePhase === "ssj" ||
+      player.entrancePhase === "ssjEnd");
+
+  if (!shouldShowEntranceChargeDust) {
+    entranceChargeDustEffect.active = false;
+    entranceChargeDustEffect.frameIndex = 0;
+    entranceChargeDustEffect.frameTimer = 0;
+    entranceChargeDustEffect.alpha = 0;
+    entranceChargeDustEffect.scale = 1;
+  } else {
+    entranceChargeDustEffect.active = true;
+    entranceChargeDustEffect.alpha =
+      player.entrancePhase === "loopBase"
+        ? 0.62
+        : player.entrancePhase === "ssj" || player.entrancePhase === "ssjEnd"
+          ? 0.94
+          : 0.82;
+    entranceChargeDustEffect.scale =
+      player.entrancePhase === "loopBase"
+        ? 0.94
+        : player.entrancePhase === "flash"
+          ? 1.05
+          : 1;
+    entranceChargeDustEffect.frameTimer++;
+    if (entranceChargeDustEffect.frameTimer >= entranceChargeDustEffect.frameDelay) {
+      entranceChargeDustEffect.frameTimer = 0;
+      entranceChargeDustEffect.frameIndex =
+        (entranceChargeDustEffect.frameIndex + 1) % entranceChargeDustFrames.length;
+    }
+  }
+
+  const shouldShowEntranceSurge = player.action === "entrance" && player.entrancePhase === "loop";
+  if (!shouldShowEntranceSurge) {
+    entranceSurgeEffect.active = false;
+    entranceSurgeEffect.frameIndex = 0;
+    entranceSurgeEffect.frameTimer = 0;
+    entranceSurgeEffect.alpha = 0;
+    entranceSurgeEffect.scale = 1;
+    entranceSurgeEffect.pulse = 0;
+    return;
+  }
+
+  if (!entranceSurgeEffect.active) {
+    entranceSurgeEffect.active = true;
+    entranceSurgeEffect.frameIndex = 0;
+    entranceSurgeEffect.frameTimer = 0;
+    entranceSurgeEffect.alpha = 0.92;
+    entranceSurgeEffect.scale = 1;
+    entranceSurgeEffect.pulse = 0;
+  } else {
+    entranceSurgeEffect.alpha += (0.96 - entranceSurgeEffect.alpha) * 0.18;
+  }
+
+  entranceSurgeEffect.pulse += 0.2;
+  entranceSurgeEffect.scale = 1 + Math.sin(entranceSurgeEffect.pulse) * 0.04;
+  entranceSurgeEffect.frameTimer++;
+  if (entranceSurgeEffect.frameTimer >= entranceSurgeEffect.frameDelay) {
+    entranceSurgeEffect.frameTimer = 0;
+    entranceSurgeEffect.frameIndex = (entranceSurgeEffect.frameIndex + 1) % entranceSurgeFrames.length;
+  }
 }
 
 function updatePowerLightningEffect() {
@@ -1908,15 +2636,258 @@ function updateKameFireEffect() {
   }
 }
 
+function updateFinalSkillEffects() {
+  const shouldShowFinalAura =
+    player.action === "finalSkill" &&
+    (player.finalSkillPhase === "charge" ||
+      player.finalSkillPhase === "blueCharge" ||
+      player.finalSkillPhase === "blueTransform" ||
+      player.finalSkillPhase === "blueEnd");
+
+  finalSkillAuraEffect.targetAlpha = shouldShowFinalAura ? 0.96 : 0;
+  finalSkillAuraEffect.active = shouldShowFinalAura || finalSkillAuraEffect.alpha > 0.02;
+  finalSkillAuraEffect.scale =
+    player.finalSkillPhase === "charge" || player.finalSkillPhase === "blueCharge"
+      ? 1 + Math.sin(Date.now() * 0.02) * 0.04
+      : 1.08;
+  finalSkillAuraEffect.alpha += (finalSkillAuraEffect.targetAlpha - finalSkillAuraEffect.alpha) * 0.14;
+
+  if (finalSkillAuraEffect.active && finalSkillAuraFrames.length > 0) {
+    finalSkillAuraEffect.frameTimer++;
+    if (finalSkillAuraEffect.frameTimer >= finalSkillAuraEffect.frameDelay) {
+      finalSkillAuraEffect.frameTimer = 0;
+      finalSkillAuraEffect.frameIndex = (finalSkillAuraEffect.frameIndex + 1) % finalSkillAuraFrames.length;
+    }
+  } else {
+    finalSkillAuraEffect.frameIndex = 0;
+    finalSkillAuraEffect.frameTimer = 0;
+  }
+
+  if (finalSkillShellEffect.active) {
+    finalSkillShellEffect.scale =
+      finalSkillShellEffect.phase === "expand"
+        ? 1 + Math.min(0.24, finalSkillShellEffect.frameIndex * 0.024)
+        : finalSkillShellEffect.phase === "loop"
+          ? 1.24 + Math.sin(Date.now() * 0.02) * 0.03
+          : Math.max(0.86, 1.26 - finalSkillShellEffect.frameIndex * 0.015);
+    const shellFrames =
+      finalSkillShellEffect.phase === "expand"
+        ? finalSkillShellExpandFrames
+        : finalSkillShellEffect.phase === "loop"
+          ? finalSkillShellLoopFrames
+          : finalSkillShellCollapseFrames;
+
+    finalSkillShellEffect.frameTimer++;
+    if (finalSkillShellEffect.frameTimer >= finalSkillShellEffect.frameDelay) {
+      finalSkillShellEffect.frameTimer = 0;
+      if (finalSkillShellEffect.phase === "expand") {
+        if (finalSkillShellEffect.frameIndex < shellFrames.length - 1) {
+          finalSkillShellEffect.frameIndex++;
+        } else {
+          finalSkillShellEffect.phase = "loop";
+          finalSkillShellEffect.frameIndex = 0;
+        }
+      } else if (finalSkillShellEffect.phase === "loop") {
+        finalSkillShellEffect.frameIndex = (finalSkillShellEffect.frameIndex + 1) % shellFrames.length;
+      } else {
+        finalSkillShellEffect.frameIndex++;
+        if (finalSkillShellEffect.frameIndex >= shellFrames.length) {
+          finalSkillShellEffect.active = false;
+          finalSkillShellEffect.phase = "idle";
+          finalSkillShellEffect.frameIndex = 0;
+          finalSkillShellEffect.alpha = 0;
+        }
+      }
+    }
+  } else {
+    finalSkillShellEffect.scale = 1;
+  }
+
+  if (finalSkillFlashEffect.active) {
+    const flashProgress =
+      finalSkillFlashFrames.length > 1
+        ? finalSkillFlashEffect.frameIndex / (finalSkillFlashFrames.length - 1)
+        : 1;
+    finalSkillFlashEffect.alpha = Math.max(0, 1 - flashProgress * 0.35);
+    if (finalSkillFlashEffect.overlayHoldTimer > 0) {
+      finalSkillFlashEffect.overlayHoldTimer--;
+      finalSkillFlashEffect.overlayAlpha = 0.96;
+    } else if (finalSkillFlashEffect.overlayFadeTimer < finalSkillFlashEffect.overlayFadeDuration) {
+      finalSkillFlashEffect.overlayFadeTimer++;
+      const overlayFadeProgress = finalSkillFlashEffect.overlayFadeTimer / finalSkillFlashEffect.overlayFadeDuration;
+      finalSkillFlashEffect.overlayAlpha = Math.max(0, 0.96 * (1 - overlayFadeProgress));
+    } else {
+      finalSkillFlashEffect.overlayAlpha = 0;
+    }
+    finalSkillFlashEffect.frameTimer++;
+    if (finalSkillFlashEffect.frameTimer >= finalSkillFlashEffect.frameDelay) {
+      finalSkillFlashEffect.frameTimer = 0;
+      finalSkillFlashEffect.frameIndex++;
+      if (finalSkillFlashEffect.frameIndex >= finalSkillFlashFrames.length) {
+        finalSkillFlashEffect.active = false;
+        finalSkillFlashEffect.frameIndex = 0;
+        finalSkillFlashEffect.alpha = 0;
+      }
+    }
+  }
+
+  if (finalSkillRevealBurstEffect.active && finalSkillRevealBurstFrames.length > 0) {
+    if (player.action !== "finalSkill" && !finalSkillRevealBurstEffect.fadeOut) {
+      finalSkillRevealBurstEffect.active = false;
+      finalSkillRevealBurstEffect.frameIndex = 0;
+      finalSkillRevealBurstEffect.frameTimer = 0;
+      finalSkillRevealBurstEffect.alpha = 0;
+      finalSkillRevealBurstEffect.fadeOut = false;
+    } else {
+      finalSkillRevealBurstEffect.frameTimer++;
+      if (finalSkillRevealBurstEffect.frameTimer >= finalSkillRevealBurstEffect.frameDelay) {
+        finalSkillRevealBurstEffect.frameTimer = 0;
+        finalSkillRevealBurstEffect.frameIndex =
+          (finalSkillRevealBurstEffect.frameIndex + 1) % finalSkillRevealBurstFrames.length;
+      }
+
+      if (finalSkillRevealBurstEffect.fadeOut) {
+        finalSkillRevealBurstEffect.alpha = Math.max(0, finalSkillRevealBurstEffect.alpha - 0.22);
+        if (finalSkillRevealBurstEffect.alpha <= 0.001) {
+          finalSkillRevealBurstEffect.active = false;
+          finalSkillRevealBurstEffect.frameIndex = 0;
+          finalSkillRevealBurstEffect.frameTimer = 0;
+          finalSkillRevealBurstEffect.alpha = 0;
+          finalSkillRevealBurstEffect.fadeOut = false;
+        }
+      } else {
+        finalSkillRevealBurstEffect.alpha += (1 - finalSkillRevealBurstEffect.alpha) * 0.12;
+      }
+    }
+  }
+
+  const shouldShowFinalKameEffect = player.action === "finalSkill" && player.finalSkillPhase === "kameFire";
+  if (shouldShowFinalKameEffect && finalSkillKameEffectStartFrames.length > 0) {
+    if (!finalSkillKameEffect.active) {
+      finalSkillKameEffect.active = true;
+      finalSkillKameEffect.phase = "start";
+      finalSkillKameEffect.frameIndex = 0;
+      finalSkillKameEffect.frameTimer = 0;
+    }
+    const effectFrames =
+      finalSkillKameEffect.phase === "start"
+        ? finalSkillKameEffectStartFrames
+        : finalSkillKameEffectLoopFrames;
+    finalSkillKameEffect.alpha += (1 - finalSkillKameEffect.alpha) * 0.16;
+    finalSkillKameEffect.frameTimer++;
+    if (finalSkillKameEffect.frameTimer >= finalSkillKameEffect.frameDelay) {
+      finalSkillKameEffect.frameTimer = 0;
+      if (finalSkillKameEffect.phase === "start") {
+        if (finalSkillKameEffect.frameIndex < effectFrames.length - 1) {
+          finalSkillKameEffect.frameIndex++;
+        } else {
+          finalSkillKameEffect.phase = "loop";
+          finalSkillKameEffect.frameIndex = 0;
+        }
+      } else {
+        finalSkillKameEffect.frameIndex =
+          (finalSkillKameEffect.frameIndex + 1) % effectFrames.length;
+      }
+    }
+  } else if (finalSkillKameEffect.active) {
+    finalSkillKameEffect.alpha += (0 - finalSkillKameEffect.alpha) * 0.2;
+    if (finalSkillKameEffect.alpha < 0.02) {
+      finalSkillKameEffect.active = false;
+      finalSkillKameEffect.phase = "start";
+      finalSkillKameEffect.frameIndex = 0;
+      finalSkillKameEffect.frameTimer = 0;
+      finalSkillKameEffect.alpha = 0;
+    }
+  }
+
+  if (finalSkillBlueEnergyEffect.active) {
+    const blueFrames =
+      finalSkillBlueEnergyEffect.phase === "start"
+        ? finalSkillBlueEnergyStartFrames
+        : finalSkillBlueEnergyEffect.phase === "loop"
+          ? finalSkillBlueEnergyLoopFrames
+          : finalSkillBlueEnergyTransformFrames;
+
+    if (blueFrames.length > 0) {
+      finalSkillBlueEnergyEffect.frameTimer++;
+      if (finalSkillBlueEnergyEffect.frameTimer >= finalSkillBlueEnergyEffect.frameDelay) {
+        finalSkillBlueEnergyEffect.frameTimer = 0;
+        if (finalSkillBlueEnergyEffect.phase === "start") {
+          if (finalSkillBlueEnergyEffect.frameIndex < blueFrames.length - 1) {
+            finalSkillBlueEnergyEffect.frameIndex++;
+          } else {
+            finalSkillBlueEnergyEffect.phase = "loop";
+            finalSkillBlueEnergyEffect.frameIndex = 0;
+          }
+        } else if (finalSkillBlueEnergyEffect.phase === "loop") {
+          finalSkillBlueEnergyEffect.frameIndex =
+            (finalSkillBlueEnergyEffect.frameIndex + 1) % blueFrames.length;
+        } else {
+          finalSkillBlueEnergyEffect.frameIndex++;
+          if (finalSkillBlueEnergyEffect.frameIndex >= blueFrames.length) {
+            finalSkillBlueEnergyEffect.active = false;
+            finalSkillBlueEnergyEffect.phase = "idle";
+            finalSkillBlueEnergyEffect.frameIndex = 0;
+            finalSkillBlueEnergyEffect.alpha = 0;
+          }
+        }
+      }
+
+      finalSkillBlueEnergyEffect.alpha =
+        finalSkillBlueEnergyEffect.phase === "loop"
+          ? 0.96
+          : 1;
+    }
+  }
+
+  if (finalSkillPeakBurstEffect.active && finalSkillPeakBurstFrames.length > 0) {
+    finalSkillPeakBurstEffect.frameTimer++;
+    if (finalSkillPeakBurstEffect.frameTimer >= finalSkillPeakBurstEffect.frameDelay) {
+      finalSkillPeakBurstEffect.frameTimer = 0;
+      finalSkillPeakBurstEffect.frameIndex++;
+      if (finalSkillPeakBurstEffect.frameIndex >= finalSkillPeakBurstFrames.length) {
+        finalSkillPeakBurstEffect.active = false;
+        finalSkillPeakBurstEffect.frameIndex = 0;
+        finalSkillPeakBurstEffect.alpha = 0;
+      }
+    }
+
+    const peakProgress =
+      finalSkillPeakBurstFrames.length > 1
+        ? finalSkillPeakBurstEffect.frameIndex / (finalSkillPeakBurstFrames.length - 1)
+        : 1;
+    const fadeOut = Math.max(0, 1 - Math.max(0, peakProgress - 0.78) / 0.22);
+    finalSkillPeakBurstEffect.alpha = Math.min(1, 0.56 + peakProgress * 0.44) * fadeOut;
+  }
+}
+
 function updateCameraShake() {
   if (player.action === "powerPrep") {
     cameraShake.targetStrength = 1.4;
   } else if (player.action === "power") {
     cameraShake.targetStrength = 2.6;
-  } else if (player.action === "entrance" && player.entrancePhase === "loop") {
-    cameraShake.targetStrength = 1.1;
+  } else if (player.action === "entrance") {
+    cameraShake.targetStrength =
+      player.entrancePhase === "flash"
+        ? 1.8
+        : player.entrancePhase === "ssj" || player.entrancePhase === "ssjEnd"
+          ? 1.45
+          : player.entrancePhase === "loopBase"
+            ? 0.45
+          : player.entrancePhase === "loop"
+            ? 1.15
+            : 0.65;
   } else if (player.action === "kamehameha" && player.kamePhase === "loop") {
     cameraShake.targetStrength = 1.35;
+  } else if (player.action === "finalSkill") {
+    cameraShake.targetStrength =
+      player.finalSkillPhase === "charge"
+        ? 3.2
+        : player.finalSkillPhase === "shellExpand" || player.finalSkillPhase === "shellLoop"
+          ? 4.2
+          : player.finalSkillPhase === "flash"
+            ? 5.2
+            : 1.2;
   } else if (player.action === "powerRelease") {
     cameraShake.targetStrength = 1.2;
   } else {
@@ -1937,7 +2908,12 @@ function updateCameraShake() {
 }
 
 function updateSceneCamera() {
-  sceneCamera.targetZoom = player.action === "entrance" ? entranceZoomTarget : 1;
+  sceneCamera.targetZoom =
+    player.action === "entrance"
+      ? entranceZoomTarget
+      : player.action === "finalSkill"
+        ? 1.12
+        : 1;
   sceneCamera.zoom += (sceneCamera.targetZoom - sceneCamera.zoom) * entranceZoomEase;
 
   if (Math.abs(sceneCamera.targetZoom - sceneCamera.zoom) < 0.002) {
@@ -2030,6 +3006,70 @@ function updateKameDamageOnBots() {
     spawnKameHitEffect(bot, kameDamagePerTick);
     triggerImpactShake(1.2);
   }
+}
+
+function updateFinalSkillKameDamageOnBots() {
+  if (player.action !== "finalSkill" || player.finalSkillPhase !== "kameFire") return;
+  if (!finalSkillTargetBot || !finalSkillTargetBot.isActive || finalSkillTargetBot.isDown) return;
+
+  const bot = finalSkillTargetBot;
+  if (bot.health <= 0) {
+    bot.finalSkillHeld = false;
+    bot.finalSkillHoldY = null;
+    bot.action = "out";
+    finalSkillTargetBot = null;
+    return;
+  }
+  const targetLiftY = Math.max(getBotGroundY() - 320, 40);
+  bot.finalSkillHeld = true;
+  bot.finalSkillHoldY = targetLiftY;
+  bot.action = "damage";
+  bot.hitstunTimer = Math.max(bot.hitstunTimer, 8);
+  bot.vx = 0;
+  bot.vy = 0;
+  bot.y += Math.sin(Date.now() * 0.03) * 0.6;
+
+  if (bot.kameDamageTick > 0) {
+    bot.kameDamageTick--;
+    return;
+  }
+
+  applyDamageToBot(bot, {
+    damage: finalSkillKameDamagePerTick,
+    knockback: 0,
+    launchY: 0,
+    hitstun: 10,
+    suppressDefaultHitEffect: true
+  });
+  if (bot.health <= 0) {
+    bot.finalSkillHeld = false;
+    bot.finalSkillHoldY = null;
+    bot.kameDamageTick = 0;
+    finalSkillTargetBot = null;
+    return;
+  }
+  bot.finalSkillHeld = true;
+  bot.finalSkillHoldY = targetLiftY;
+  bot.action = "damage";
+  bot.hitstunTimer = Math.max(bot.hitstunTimer, 10);
+  bot.vx = 0;
+  bot.vy = 0;
+  bot.kameDamageTick = finalSkillKameDamageTickFrames;
+  if (finalSkillKameStickFrames.length > 0) {
+    finalSkillBotHitEffects.push({
+      frames: finalSkillKameStickFrames,
+      worldX: bot.worldX + bot.width * 0.5,
+      y: bot.y + bot.height * 0.44,
+      direction: bot.direction,
+      frameIndex: 0,
+      frameTimer: 0,
+      frameDelay: 3,
+      alpha: 0.96,
+      scale: 1.08
+    });
+  }
+  spawnKameHitEffect(bot, finalSkillKameDamagePerTick);
+  triggerImpactShake(1.35);
 }
 
 function drawBlackMaskedEffect(img, drawX, drawY, drawWidth, drawHeight) {
@@ -2138,13 +3178,108 @@ function drawAuraLayer(frames, effectState, options) {
 }
 
 function drawAuraEffect() {
+  const useBlueAuraTint =
+    player.action === "finalSkill" && player.finalSkillPhase !== "noTargetEnd";
+
+  if (entranceChargeDustEffect.active && entranceChargeDustFrames.length > 0) {
+    const dustImg = entranceChargeDustFrames[entranceChargeDustEffect.frameIndex];
+    if (dustImg && dustImg.complete) {
+      const drawWidth = Math.round(188 * entranceChargeDustEffect.scale);
+      const aspectRatio = dustImg.naturalWidth / dustImg.naturalHeight || 1;
+      const drawHeight = Math.round(drawWidth / aspectRatio);
+      const centerX = player.x + player.width / 2;
+      const dustBaseX = Math.round(centerX - drawWidth / 2 - 120);
+      const mirroredDustX = Math.round(centerX - drawWidth / 2 + 114);
+      const drawY = Math.round(getPlayerLineY() - drawHeight + 16);
+      const mirroredDustY = drawY - 2;
+
+      ctx.save();
+      ctx.globalAlpha = entranceChargeDustEffect.alpha;
+      ctx.globalCompositeOperation = "screen";
+      if (player.direction === -1) {
+        const drawCenterX = dustBaseX + drawWidth / 2;
+        ctx.translate(drawCenterX, 0);
+        ctx.scale(-1, 1);
+        ctx.translate(-drawCenterX, 0);
+      }
+      ctx.drawImage(dustImg, dustBaseX, drawY, drawWidth, drawHeight);
+      ctx.restore();
+
+      ctx.save();
+      ctx.globalAlpha = entranceChargeDustEffect.alpha * 0.9;
+      ctx.globalCompositeOperation = "screen";
+      const mirroredCenterX = mirroredDustX + drawWidth / 2;
+      ctx.translate(mirroredCenterX, 0);
+      ctx.scale(-1, 1);
+      ctx.translate(-mirroredCenterX, 0);
+      if (player.direction === -1) {
+        const drawCenterX = mirroredDustX + drawWidth / 2;
+        ctx.translate(drawCenterX, 0);
+        ctx.scale(-1, 1);
+        ctx.translate(-drawCenterX, 0);
+      }
+      ctx.drawImage(dustImg, mirroredDustX, mirroredDustY, drawWidth, drawHeight);
+      ctx.restore();
+    }
+  }
+
+  if (entranceSurgeEffect.active && entranceSurgeFrames.length > 0) {
+    const entranceSurgeFrame = entranceSurgeFrames[entranceSurgeEffect.frameIndex];
+    if (entranceSurgeFrame && entranceSurgeFrame.complete) {
+      const drawWidth = Math.round(332 * entranceSurgeEffect.scale);
+      const aspectRatio = entranceSurgeFrame.naturalWidth / entranceSurgeFrame.naturalHeight || 1;
+      const drawHeight = Math.round(drawWidth / aspectRatio);
+      const drawX = Math.round(player.x + player.width / 2 - drawWidth / 2);
+      const drawY = Math.round(player.y + player.height - drawHeight + 22);
+
+      ctx.save();
+      ctx.globalAlpha = entranceSurgeEffect.alpha;
+      ctx.globalCompositeOperation = "lighter";
+      ctx.filter = "brightness(1.22) saturate(1.08) contrast(1.08)";
+      if (player.direction === -1) {
+        const centerX = drawX + drawWidth / 2;
+        ctx.translate(centerX, 0);
+        ctx.scale(-1, 1);
+        ctx.translate(-centerX, 0);
+      }
+      ctx.drawImage(entranceSurgeFrame, drawX, drawY, drawWidth, drawHeight);
+      ctx.restore();
+    }
+  }
+
+  if (entranceAuraEffect.alpha > 0 && entranceAuraEffect.mode !== "idle") {
+    const entranceAuraFrames =
+      entranceAuraEffect.mode === "gold" ? entranceGoldAuraFrames : entranceWhiteAuraFrames;
+
+    if (entranceAuraFrames.length > 0) {
+      const entranceAuraFrameState = {
+        ...entranceAuraEffect,
+        frameIndex: Math.min(entranceAuraEffect.frameIndex, entranceAuraFrames.length - 1)
+      };
+
+      drawAuraLayer(entranceAuraFrames, entranceAuraFrameState, {
+        baseWidth: entranceAuraEffect.mode === "gold" ? 292 : 276,
+        baseHeight: entranceAuraEffect.mode === "gold" ? 302 : 292,
+        offsetX: 0,
+        offsetY: 18,
+        composite: entranceAuraEffect.mode === "gold" ? "lighter" : "screen",
+        filter:
+          entranceAuraEffect.mode === "gold"
+            ? "brightness(1.18) saturate(1.16) contrast(1.08)"
+            : "brightness(1.38) saturate(0.72) contrast(1.12)"
+      });
+    }
+  }
+
   drawAuraLayer(aura3Frames, aura3Effect, {
     baseWidth: 236,
     baseHeight: 84,
     offsetX: 0,
     offsetY: 18,
     composite: "screen",
-    filter: "brightness(1.08) contrast(1.1)"
+    filter: useBlueAuraTint
+      ? "hue-rotate(175deg) saturate(1.42) brightness(1.12) contrast(1.12)"
+      : "brightness(1.08) contrast(1.1)"
   });
 
   const aura2Frames =
@@ -2168,7 +3303,9 @@ function drawAuraEffect() {
       offsetX: 0,
       offsetY: 30,
       composite: "lighter",
-      filter: "brightness(1.12) contrast(1.12)"
+      filter: useBlueAuraTint
+        ? "hue-rotate(175deg) saturate(1.5) brightness(1.18) contrast(1.12)"
+        : "brightness(1.12) contrast(1.12)"
     });
   }
 
@@ -2177,7 +3314,10 @@ function drawAuraEffect() {
     baseHeight: 280,
     offsetX: 1,
     offsetY: 18,
-    composite: "screen"
+    composite: "screen",
+    filter: useBlueAuraTint
+      ? "hue-rotate(175deg) saturate(1.52) brightness(1.16) contrast(1.12)"
+      : undefined
   });
 
   if (aura4Effect.active) {
@@ -2294,6 +3434,202 @@ function getActionConfig() {
     };
   }
 
+  if (player.action === "teleport") {
+    const frames =
+      player.teleportPhase === "prep"
+        ? teleportPrepFrames
+        : teleportMoveFrames;
+    const frameDelays =
+      player.teleportPhase === "prep"
+        ? teleportPrepFrameDelays
+        : teleportMoveFrameDelays;
+
+    return {
+      frames,
+      frameDelays,
+      loop: false,
+      width: 182,
+      height: 180,
+      yOffset: 8,
+      sourceAnchorWidth: standardSpriteSourceWidth,
+      sourceAnchorHeight: standardSpriteSourceHeight
+    };
+  }
+
+  if (player.action === "finalSkill") {
+    const frames =
+      player.finalSkillPhase === "intro"
+        ? finalSkillIntroFrames
+        : player.finalSkillPhase === "reveal"
+          ? finalSkillRevealFrames
+          : player.finalSkillPhase === "blueCharge" || player.finalSkillPhase === "blueTransform"
+            ? finalSkillBlueChargeFrames
+          : player.finalSkillPhase === "blueEnd"
+            ? finalSkillBlueEndFrames
+          : player.finalSkillPhase === "teleportPrep"
+            ? finalSkillComboTeleportPrepFrames
+          : player.finalSkillPhase === "teleportMove"
+            ? finalSkillComboTeleportMoveFrames
+          : player.finalSkillPhase === "strikePrep"
+            ? finalSkillComboStrikePrepFrames
+          : player.finalSkillPhase === "strikeReady"
+            ? finalSkillComboStrikeReadyFrames
+          : player.finalSkillPhase === "strike"
+            ? finalSkillComboStrikeFrames
+          : player.finalSkillPhase === "secondStrikePrep"
+            ? finalSkillComboSecondStrikePrepFrames
+          : player.finalSkillPhase === "secondStrikeReady"
+            ? finalSkillComboSecondStrikeReadyFrames
+          : player.finalSkillPhase === "secondStrike"
+            ? finalSkillComboSecondStrikeFrames
+          : player.finalSkillPhase === "secondStrikeEnd"
+            ? finalSkillComboSecondStrikeEndFrames
+          : player.finalSkillPhase === "noTargetEnd"
+            ? finalSkillNoTargetEndFrames
+          : player.finalSkillPhase === "teleportIn" || player.finalSkillPhase === "teleportBehind"
+            ? finalSkillSsj3HoldFrames
+            : player.finalSkillPhase === "kickPrep"
+              ? finalSkillKickPrepFrames
+              : player.finalSkillPhase === "kick"
+                ? finalSkillKickFrames
+                : player.finalSkillPhase === "kickEnd"
+                  ? finalSkillKickEndFrames
+                  : player.finalSkillPhase === "kameCharge"
+                    ? finalSkillKameChargeFrames
+                    : player.finalSkillPhase === "kamePrep"
+                      ? finalSkillKamePrepFrames
+                      : player.finalSkillPhase === "kameFire"
+                        ? finalSkillKameFireFrames
+                        : player.finalSkillPhase === "kameEnd"
+                          ? finalSkillKameEndFrames
+                        : player.finalSkillPhase === "returnFlash"
+                          ? finalSkillReturnFlashFrames
+                          : player.finalSkillPhase === "returnEnd"
+                            ? finalSkillReturnEndFrames
+                            : finalSkillChargeFrames;
+    const frameDelays =
+      player.finalSkillPhase === "intro"
+        ? finalSkillIntroFrameDelays
+        : player.finalSkillPhase === "reveal"
+          ? [10, 10, 11, 14]
+        : player.finalSkillPhase === "blueCharge" || player.finalSkillPhase === "blueTransform"
+            ? [8, 8]
+          : player.finalSkillPhase === "blueEnd"
+            ? [34]
+          : player.finalSkillPhase === "teleportPrep"
+            ? [22, 24]
+          : player.finalSkillPhase === "teleportMove"
+            ? [10, 10, 14]
+          : player.finalSkillPhase === "strikePrep"
+            ? [28, 34]
+          : player.finalSkillPhase === "strikeReady"
+            ? [32]
+          : player.finalSkillPhase === "strike"
+            ? [16, 20]
+          : player.finalSkillPhase === "secondStrikePrep"
+            ? [28, 34]
+          : player.finalSkillPhase === "secondStrikeReady"
+            ? [40]
+          : player.finalSkillPhase === "secondStrike"
+            ? [24, 28]
+          : player.finalSkillPhase === "secondStrikeEnd"
+            ? [22, 28]
+          : player.finalSkillPhase === "noTargetEnd"
+            ? [42, 58]
+          : player.finalSkillPhase === "teleportIn" || player.finalSkillPhase === "teleportBehind"
+            ? [999]
+            : player.finalSkillPhase === "kickPrep"
+              ? [11, 12]
+              : player.finalSkillPhase === "kick"
+                ? [8, 8]
+                  : player.finalSkillPhase === "kickEnd"
+                    ? [10, 12]
+                    : player.finalSkillPhase === "kameCharge"
+                    ? [26, 30]
+                    : player.finalSkillPhase === "kamePrep"
+                      ? [28, 34]
+                      : player.finalSkillPhase === "kameFire"
+                        ? [18, 20]
+                        : player.finalSkillPhase === "kameEnd"
+                          ? [18, 24, 54]
+                        : player.finalSkillPhase === "returnFlash"
+                          ? [20]
+                          : player.finalSkillPhase === "returnEnd"
+                            ? [42, 26]
+                            : finalSkillChargeFrameDelays;
+
+    return {
+      frames,
+      frameDelays,
+      loop:
+        player.finalSkillPhase === "charge" ||
+        player.finalSkillPhase === "shellExpand" ||
+        player.finalSkillPhase === "shellLoop" ||
+        player.finalSkillPhase === "flash" ||
+        player.finalSkillPhase === "kameFire" ||
+        player.finalSkillPhase === "blueCharge",
+      width:
+        player.finalSkillPhase === "reveal" ||
+        player.finalSkillPhase === "blueCharge" ||
+        player.finalSkillPhase === "blueTransform" ||
+        player.finalSkillPhase === "noTargetEnd" ||
+        player.finalSkillPhase === "teleportIn" ||
+        player.finalSkillPhase === "teleportBehind" ||
+        player.finalSkillPhase === "kickPrep" ||
+        player.finalSkillPhase === "kick" ||
+        player.finalSkillPhase === "kickEnd" ||
+        player.finalSkillPhase === "secondStrikeEnd" ||
+        player.finalSkillPhase === "kameEnd" ||
+        player.finalSkillPhase === "returnFlash"
+          ? 184
+          : 176,
+      height:
+        player.finalSkillPhase === "reveal" ||
+        player.finalSkillPhase === "blueCharge" ||
+        player.finalSkillPhase === "blueTransform" ||
+        player.finalSkillPhase === "noTargetEnd" ||
+        player.finalSkillPhase === "teleportIn" ||
+        player.finalSkillPhase === "teleportBehind" ||
+        player.finalSkillPhase === "kickPrep" ||
+        player.finalSkillPhase === "kick" ||
+        player.finalSkillPhase === "kickEnd" ||
+        player.finalSkillPhase === "secondStrikeEnd" ||
+        player.finalSkillPhase === "kameEnd" ||
+        player.finalSkillPhase === "returnFlash"
+          ? 188
+          : 184,
+      yOffset: 6,
+      sourceAnchorWidth: standardSpriteSourceWidth,
+      sourceAnchorHeight: standardSpriteSourceHeight
+    };
+  }
+
+  if (player.action === "goldKiBlast") {
+    const frames =
+      player.goldKiBlastPhase === "prep"
+        ? goldKiBlastPrepFrames
+        : player.goldKiBlastPhase === "fire"
+          ? goldKiBlastFireFrames
+          : goldKiBlastEndFrames;
+    const frameDelays =
+      player.goldKiBlastPhase === "prep"
+        ? goldKiBlastPrepFrameDelays
+        : player.goldKiBlastPhase === "fire"
+          ? goldKiBlastFireFrameDelays
+          : goldKiBlastEndFrameDelays;
+
+    return {
+      frames,
+      frameDelays,
+      loop: false,
+      width: 186,
+      height: 184,
+      yOffset: 8,
+      sourceAnchorWidth: standardSpriteSourceWidth,
+      sourceAnchorHeight: standardSpriteSourceHeight
+    };
+  }
+
   if (player.action === "attackJump") {
     return {
       frames: attackJumpFrames,
@@ -2347,8 +3683,21 @@ function getActionConfig() {
 
   if (player.action === "power") {
     return {
-      frames: powerFrames,
-      frameDelay: 9,
+      frames: player.powerFullCharge && powerFullFrames.length > 0 ? powerFullFrames : powerFrames,
+      frameDelay: player.powerFullCharge ? 8 : 9,
+      width: 176,
+      height: 184,
+      yOffset: 6,
+      sourceAnchorWidth: standardSpriteSourceWidth,
+      sourceAnchorHeight: standardSpriteSourceHeight
+    };
+  }
+
+  if (player.action === "powerEnd") {
+    return {
+      frames: powerEndFrames,
+      frameDelays: powerEndFrameDelays,
+      loop: false,
       width: 176,
       height: 184,
       yOffset: 6,
@@ -2363,12 +3712,30 @@ function getActionConfig() {
         ? entrancePrepFrames
         : player.entrancePhase === "brace"
           ? entranceBraceFrames
-          : entranceLoopFrames;
+          : player.entrancePhase === "ssj"
+            ? entranceSaiyanLoopFrames
+            : player.entrancePhase === "ssjEnd"
+              ? entranceSaiyanEndFrames
+            : entranceLoopFrames;
+
+    const isLoopingPhase =
+      player.entrancePhase === "loopBase" ||
+      player.entrancePhase === "loop" ||
+      player.entrancePhase === "flash" ||
+      player.entrancePhase === "ssj";
 
     return {
       frames,
-      frameDelay: player.entrancePhase === "loop" ? 10 : 999,
-      loop: player.entrancePhase === "loop",
+      frameDelays: player.entrancePhase === "ssjEnd" ? entranceSaiyanEndFrameDelays : undefined,
+      frameDelay:
+        player.entrancePhase === "ssjEnd"
+          ? entranceSaiyanEndFrameDelays[0]
+          : isLoopingPhase
+            ? player.entrancePhase === "ssj"
+              ? 9
+              : 10
+            : 999,
+      loop: isLoopingPhase,
       width: 170,
       height: 180,
       yOffset: 8,
@@ -2536,7 +3903,7 @@ function getActionConfig() {
   }
 
   return {
-    frames: idleFrames,
+    frames: player.power > powerGoldThreshold && idleFullPowerFrames.length > 0 ? idleFullPowerFrames : idleFrames,
     frameDelay: 14,
     width: 170,
     height: 180,
@@ -2549,7 +3916,7 @@ function getActionConfig() {
 function getBotActionConfig(bot) {
   if (bot.action === "out") {
     return {
-      frames: outFrames,
+      frames: botOutFrames,
       frameDelays: outFrameDelays,
       frameOffsets: outFrameOffsets,
       loop: false,
@@ -2627,7 +3994,6 @@ function getBotActionConfig(bot) {
 }
 
 function drawBackground() {
-  ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
   const loopLayer = (img, width, height, y, scrollFactor, alpha = 1, composite = "source-over", extraOffset = 0) => {
     if (!img.complete) return;
 
@@ -2856,6 +4222,8 @@ function updateKiBlastProjectiles() {
     const projectileFrames =
       projectile.type === "kamehameha"
         ? kameFireEffectFrames
+        : projectile.type === "goldBlast"
+          ? goldKiBlastProjectileFrames
         : kiBlastProjectileFrames;
 
     projectile.worldX += projectile.vx;
@@ -2917,7 +4285,8 @@ function updateKiBlastProjectiles() {
         damage: projectile.damage,
         knockback: projectile.knockback,
         launchY: projectile.launchY,
-        hitstun: projectile.hitstun
+        hitstun: projectile.hitstun,
+        suppressDefaultHitEffect: true
       });
       triggerImpactShake(4.8);
       kiBlastProjectiles.splice(i, 1);
@@ -2974,9 +4343,28 @@ function updateKameHitEffects() {
   }
 }
 
-function updateKiBlastShootEffects() {
-  for (let i = kiBlastShootEffects.length - 1; i >= 0; i--) {
-    const effect = kiBlastShootEffects[i];
+function updateEnemySkillHitEffects() {
+  for (let i = enemySkillHitEffects.length - 1; i >= 0; i--) {
+    const effect = enemySkillHitEffects[i];
+    const effectFrames = effect.frames ?? enemySkillHitFrames;
+    effect.frameTimer++;
+    effect.alpha *= 0.94;
+
+    if (effect.frameTimer >= effect.frameDelay) {
+      effect.frameTimer = 0;
+      effect.frameIndex++;
+    }
+
+    if (effect.frameIndex >= effectFrames.length || effect.alpha < 0.05) {
+      enemySkillHitEffects.splice(i, 1);
+    }
+  }
+}
+
+function updateFinalSkillBotHitEffects() {
+  for (let i = finalSkillBotHitEffects.length - 1; i >= 0; i--) {
+    const effect = finalSkillBotHitEffects[i];
+    const effectFrames = effect.frames ?? finalSkillBotHitFrames;
     effect.frameTimer++;
     effect.alpha *= 0.965;
 
@@ -2985,7 +4373,28 @@ function updateKiBlastShootEffects() {
       effect.frameIndex++;
     }
 
-    if (effect.frameIndex >= kiBlastShootEffectFrames.length || effect.alpha < 0.05) {
+    if (effect.frameIndex >= effectFrames.length || effect.alpha < 0.05) {
+      finalSkillBotHitEffects.splice(i, 1);
+    }
+  }
+}
+
+function updateKiBlastShootEffects() {
+  for (let i = kiBlastShootEffects.length - 1; i >= 0; i--) {
+    const effect = kiBlastShootEffects[i];
+    const effectFrames =
+      effect.type === "goldBlast"
+        ? goldKiBlastProjectileFrames
+        : kiBlastShootEffectFrames;
+    effect.frameTimer++;
+    effect.alpha *= effect.type === "goldBlast" ? 0.975 : 0.965;
+
+    if (effect.frameTimer >= effect.frameDelay) {
+      effect.frameTimer = 0;
+      effect.frameIndex++;
+    }
+
+    if (effect.frameIndex >= effectFrames.length || effect.alpha < 0.05) {
       kiBlastShootEffects.splice(i, 1);
     }
   }
@@ -2996,6 +4405,8 @@ function drawKiBlastProjectiles() {
     const projectileFrames =
       projectile.type === "kamehameha"
         ? kameFireEffectFrames
+        : projectile.type === "goldBlast"
+          ? goldKiBlastProjectileFrames
         : kiBlastProjectileFrames;
     const img = projectileFrames[projectile.frameIndex];
     if (!img || !img.complete) continue;
@@ -3019,13 +4430,11 @@ function drawKiBlastProjectiles() {
 
 function drawKiBlastImpactEffects() {
   for (const effect of kiBlastImpactEffects) {
-    const baseImg = kiBlastImpactFrames[effect.frameIndex];
-    const glowImg = kiBlastImpactGlowFrames[effect.frameIndex];
-    if ((!baseImg || !baseImg.complete) && (!glowImg || !glowImg.complete)) continue;
+    const img = kiBlastImpactFrames[effect.frameIndex];
+    if (!img || !img.complete) continue;
 
-    const drawWidth = Math.round(138 * effect.scale);
-    const referenceImg = glowImg && glowImg.complete ? glowImg : baseImg;
-    const aspectRatio = referenceImg.naturalWidth / referenceImg.naturalHeight || 1;
+    const drawWidth = Math.round(152 * effect.scale);
+    const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
     const drawHeight = Math.round(drawWidth / aspectRatio);
     const drawX = Math.round(effect.worldX - stageScrollX - drawWidth / 2);
     const drawY = Math.round(effect.y - drawHeight / 2 + effect.driftY);
@@ -3038,16 +4447,10 @@ function drawKiBlastImpactEffects() {
       ctx.translate(-centerX, 0);
     }
 
-    if (baseImg && baseImg.complete) {
-      ctx.globalAlpha = effect.alpha;
-      drawBlackMaskedEffect(baseImg, drawX, drawY, drawWidth, drawHeight);
-    }
-
-    if (glowImg && glowImg.complete) {
-      ctx.globalAlpha = effect.alpha * 0.92;
-      ctx.globalCompositeOperation = "lighter";
-      drawBlackMaskedEffect(glowImg, drawX, drawY, drawWidth, drawHeight);
-    }
+    ctx.globalAlpha = effect.alpha;
+    ctx.globalCompositeOperation = "screen";
+    ctx.filter = "brightness(1.22) saturate(1.08) contrast(1.06)";
+    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
     ctx.restore();
   }
 }
@@ -3078,15 +4481,16 @@ function drawKameHitEffects() {
   }
 }
 
-function drawKiBlastShootEffects() {
-  for (const effect of kiBlastShootEffects) {
-    const img = kiBlastShootEffectFrames[effect.frameIndex];
+function drawEnemySkillHitEffects() {
+  for (const effect of enemySkillHitEffects) {
+    const effectFrames = effect.frames ?? enemySkillHitFrames;
+    const img = effectFrames[effect.frameIndex];
     if (!img || !img.complete) continue;
 
-    const drawWidth = 132;
+    const drawWidth = Math.round(152 * effect.scale);
     const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
     const drawHeight = Math.round(drawWidth / aspectRatio);
-    const drawX = Math.round(effect.worldX - stageScrollX - drawWidth / 2 - effect.direction * 19);
+    const drawX = Math.round(effect.worldX - stageScrollX - drawWidth / 2);
     const drawY = Math.round(effect.y - drawHeight / 2);
 
     ctx.save();
@@ -3099,10 +4503,106 @@ function drawKiBlastShootEffects() {
 
     ctx.globalAlpha = effect.alpha;
     ctx.globalCompositeOperation = "screen";
-    ctx.filter = "brightness(1.3) contrast(1.12)";
+    ctx.filter = "brightness(1.35) saturate(1.18) contrast(1.08)";
     ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
     ctx.restore();
   }
+}
+
+function drawFinalSkillBotHitEffects() {
+  for (const effect of finalSkillBotHitEffects) {
+    const effectFrames = effect.frames ?? finalSkillBotHitFrames;
+    const img = effectFrames[effect.frameIndex];
+    if (!img || !img.complete) continue;
+
+    const drawWidth = Math.round(184 * effect.scale);
+    const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
+    const drawHeight = Math.round(drawWidth / aspectRatio);
+    const drawX = Math.round(effect.worldX - stageScrollX - drawWidth / 2);
+    const drawY = Math.round(effect.y - drawHeight / 2);
+
+    ctx.save();
+    if (effect.direction === -1) {
+      const centerX = drawX + drawWidth / 2;
+      ctx.translate(centerX, 0);
+      ctx.scale(-1, 1);
+      ctx.translate(-centerX, 0);
+    }
+
+    ctx.globalAlpha = effect.alpha;
+    ctx.globalCompositeOperation = "screen";
+    ctx.filter = "brightness(1.28) saturate(1.22) contrast(1.08)";
+    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+    ctx.restore();
+  }
+}
+
+function drawKiBlastShootEffects() {
+  for (const effect of kiBlastShootEffects) {
+    const effectFrames =
+      effect.type === "goldBlast"
+        ? goldKiBlastProjectileFrames
+        : kiBlastShootEffectFrames;
+    const img = effectFrames[effect.frameIndex];
+    if (!img || !img.complete) continue;
+
+    const drawWidth = effect.type === "goldBlast" ? 156 : 132;
+    const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
+    const drawHeight = Math.round(drawWidth / aspectRatio);
+    const drawX = Math.round(
+      effect.worldX - stageScrollX - drawWidth / 2 - effect.direction * (effect.type === "goldBlast" ? 10 : 19)
+    );
+    const drawY = Math.round(effect.y - drawHeight / 2 + (effect.type === "goldBlast" ? -2 : 0));
+
+    ctx.save();
+    if (effect.direction === -1) {
+      const centerX = drawX + drawWidth / 2;
+      ctx.translate(centerX, 0);
+      ctx.scale(-1, 1);
+      ctx.translate(-centerX, 0);
+    }
+
+    ctx.globalAlpha = effect.alpha;
+    ctx.globalCompositeOperation = "screen";
+    ctx.filter =
+      effect.type === "goldBlast"
+        ? "brightness(1.4) saturate(1.25) contrast(1.08)"
+        : "brightness(1.3) contrast(1.12)";
+    ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+    ctx.restore();
+  }
+}
+
+function drawGoldKiBlastLoopEffect() {
+  if (!goldKiBlastLoopEffect.active || goldKiBlastProjectileFrames.length === 0) {
+    return;
+  }
+
+  const img = goldKiBlastProjectileFrames[goldKiBlastLoopEffect.frameIndex];
+  if (!img || !img.complete) {
+    return;
+  }
+
+  const drawWidth = Math.round(208 * goldKiBlastLoopEffect.scale);
+  const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
+  const drawHeight = Math.round(drawWidth / aspectRatio);
+  const worldX = getPlayerWorldX() + (player.direction === -1 ? -17 : 259);
+  const drawX = Math.round(worldX - stageScrollX - drawWidth / 2);
+  const drawY = Math.round(getPlayerLineY() - drawHeight / 2 - 78);
+
+  ctx.save();
+  if (player.direction === -1) {
+    const centerX = drawX + drawWidth / 2;
+    ctx.translate(centerX, 0);
+    ctx.scale(-1, 1);
+    ctx.translate(-centerX, 0);
+  }
+
+  ctx.globalAlpha = goldKiBlastLoopEffect.alpha;
+  ctx.globalCompositeOperation = "screen";
+  ctx.filter = "brightness(1.4) saturate(1.25) contrast(1.08)";
+  ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+  ctx.restore();
 }
 
 function getAttackHitbox() {
@@ -3157,14 +4657,103 @@ function applyDamageToBot(bot, hitbox) {
     bot.hitstunTimer = 0;
     bot.isDown = false;
     bot.vx = hitbox.knockback * player.direction * 0.62;
-    bot.vy = Math.min(hitbox.launchY * 1.12, -7.2);
+    bot.vy = Math.min((hitbox.launchY ?? -5.2) * 1.12, -7.2);
   } else {
     bot.action = "damage";
-    bot.hitstunTimer = hitbox.hitstun || 18;
+    bot.hitstunTimer = hitbox.hitstun ?? 18;
     bot.vx = hitbox.knockback * player.direction;
-    bot.vy = hitbox.launchY || -5.2;
+    bot.vy = hitbox.launchY ?? -5.2;
+  }
+
+  if (!hitbox.suppressDefaultHitEffect && enemySkillHitFrames.length > 0) {
+    const hitEffectFrames =
+      player.action === "attack" && attackHitEffectFrames.length > 0
+        ? attackHitEffectFrames
+        : player.action === "attackJump" && attackJumpHitEffectFrames.length > 0
+          ? attackJumpHitEffectFrames
+        : player.action === "backKickSkill" && backKickSkillHitEffectFrames.length > 0
+          ? backKickSkillHitEffectFrames
+        : player.action === "runAttack" && runAttackHitEffectFrames.length > 0
+          ? runAttackHitEffectFrames
+        : player.action === "backAttack" && backAttackHitEffectFrames.length > 0
+          ? backAttackHitEffectFrames
+        : player.action === "walkKick" && walkKickHitEffectFrames.length > 0
+          ? walkKickHitEffectFrames
+        : enemySkillHitFrames;
+    enemySkillHitEffects.push({
+      frames: hitEffectFrames,
+      worldX: bot.worldX + bot.width * 0.5,
+      y: bot.y + bot.height * 0.44,
+      direction: bot.direction,
+      frameIndex: 0,
+      frameTimer: 0,
+      frameDelay: 3,
+      alpha: 0.98,
+      scale: 1
+    });
   }
   cameraShake.targetStrength = Math.max(cameraShake.targetStrength, 4.5);
+}
+
+function getGoldKiBlastHitbox() {
+  if (player.action !== "goldKiBlast" || player.goldKiBlastPhase !== "fire") return null;
+
+  const effectWidth = 208;
+  const effectHeight = Math.round(effectWidth / 1.24);
+  const centerWorldX = getPlayerWorldX() + (player.direction === -1 ? -17 : 259);
+  const centerY = getPlayerLineY() - 78 + effectHeight * 0.5;
+
+  return {
+    left: centerWorldX - effectWidth * 0.34,
+    right: centerWorldX + effectWidth * 0.34,
+    top: centerY - effectHeight * 0.32,
+    bottom: centerY + effectHeight * 0.28
+  };
+}
+
+function updateGoldKiBlastDamageOnBots() {
+  const hitbox = getGoldKiBlastHitbox();
+  if (!hitbox) return;
+
+  const candidateBots = [];
+  if (trainingBotEnabled && trainingBot.isActive) {
+    candidateBots.push(trainingBot);
+  }
+  for (const bot of spamBots) {
+    if (bot.isActive) {
+      candidateBots.push(bot);
+    }
+  }
+
+  for (const bot of candidateBots) {
+    if (bot.isDown) continue;
+
+    const targetLeft = bot.worldX + bot.width * 0.22;
+    const targetRight = bot.worldX + bot.width * 0.8;
+    const targetTop = bot.y + 22;
+    const targetBottom = bot.y + bot.height - 18;
+    const overlapsX = hitbox.right >= targetLeft && hitbox.left <= targetRight;
+    const overlapsY = hitbox.bottom >= targetTop && hitbox.top <= targetBottom;
+
+    if (!overlapsX || !overlapsY) {
+      bot.kameDamageTick = 0;
+      continue;
+    }
+
+    if (bot.kameDamageTick > 0) {
+      bot.kameDamageTick--;
+      continue;
+    }
+
+    applyDamageToBot(bot, {
+      damage: goldKiBlastDamagePerTick,
+      knockback: 0,
+      launchY: 0,
+      hitstun: 6
+    });
+    bot.kameDamageTick = goldKiBlastDamageTickFrames;
+    triggerImpactShake(0.85);
+  }
 }
 
 function updateSingleBot(bot) {
@@ -3206,6 +4795,29 @@ function updateSingleBot(bot) {
     bot.dustCooldown--;
   }
 
+  if (bot.finalSkillHeld) {
+    bot.action = "damage";
+    bot.frameIndex = 0;
+    bot.frameTimer = 0;
+    bot.hitstunTimer = Math.max(bot.hitstunTimer, 2);
+    bot.vx = 0;
+    if (typeof bot.finalSkillHoldY === "number") {
+      if (bot.y > bot.finalSkillHoldY) {
+        bot.vy = -6.4;
+        bot.y += bot.vy;
+        if (bot.y <= bot.finalSkillHoldY) {
+          bot.y = bot.finalSkillHoldY;
+          bot.vy = 0;
+        }
+      } else {
+        bot.y = bot.finalSkillHoldY;
+        bot.vy = 0;
+      }
+    } else {
+      bot.vy = 0;
+    }
+  }
+
   if (bot.action === "out") {
     if (bot.frameIndex === 0) {
       bot.vx *= 0.9;
@@ -3223,7 +4835,7 @@ function updateSingleBot(bot) {
       bot.frameIndex = 0;
       bot.frameTimer = 0;
     }
-  } else if (!bot.isDown) {
+  } else if (!bot.isDown && !bot.finalSkillHeld) {
     const distanceToPlayer = playerWorldX - bot.worldX;
     const absDistance = Math.abs(distanceToPlayer);
 
@@ -3260,7 +4872,7 @@ function updateSingleBot(bot) {
     bot.vx *= 0.78;
   }
 
-  if (bot.y < botGroundY || bot.vy !== 0) {
+  if (!bot.finalSkillHeld && (bot.y < botGroundY || bot.vy !== 0)) {
     bot.vy += gravity * 0.42;
     bot.y += bot.vy;
 
@@ -3339,6 +4951,8 @@ function updateSingleBot(bot) {
 
 function spawnSpamBotIfNeeded() {
   if (!botSpamEnabled) return;
+  if (player.action === "entrance") return;
+  if (botSpamDelayTimer > 0) return;
 
   const playerWorldX = getPlayerWorldX();
   const activeSpamBots = spamBots.filter((bot) => bot.isActive && !bot.isDown).length;
@@ -3358,9 +4972,13 @@ function updateTrainingBot() {
     playerHitCooldown--;
   }
 
-  trainingBot.isActive = trainingBotEnabled;
+  trainingBot.isActive = trainingBotEnabled && player.action !== "entrance";
   if (trainingBotEnabled) {
     updateSingleBot(trainingBot);
+  }
+
+  if (botSpamEnabled && botSpamDelayTimer > 0 && player.action !== "entrance") {
+    botSpamDelayTimer--;
   }
 
   spawnSpamBotIfNeeded();
@@ -3438,8 +5056,28 @@ function updatePlayer() {
         player.entrancePhase = "brace";
         player.entranceTimer = entranceBraceFramesDuration;
       } else if (player.entrancePhase === "brace") {
+        player.entrancePhase = "loopBase";
+        player.entranceTimer = entranceLoopBaseDurationFrames;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      } else if (player.entrancePhase === "loopBase") {
         player.entrancePhase = "loop";
         player.entranceTimer = entranceLoopDurationFrames;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      } else if (player.entrancePhase === "loop") {
+        player.entrancePhase = "flash";
+        player.entranceTimer = entranceFlashDurationFrames;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      } else if (player.entrancePhase === "flash") {
+        player.entrancePhase = "ssj";
+        player.entranceTimer = entranceSaiyanLoopDurationFrames;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      } else if (player.entrancePhase === "ssj") {
+        player.entrancePhase = "ssjEnd";
+        player.entranceTimer = 0;
         player.frameIndex = 0;
         player.frameTimer = 0;
       } else {
@@ -3448,6 +5086,17 @@ function updatePlayer() {
         player.frameIndex = 0;
         player.frameTimer = 0;
       }
+    }
+
+    if (
+      player.entrancePhase === "ssjEnd" &&
+      player.frameIndex >= entranceSaiyanEndFrames.length - 1 &&
+      player.frameTimer === 0
+    ) {
+      player.entrancePhase = "idle";
+      player.action = "idle";
+      player.frameIndex = 0;
+      player.frameTimer = 0;
     }
 
     return;
@@ -3505,6 +5154,10 @@ function updatePlayer() {
     if (player.powerReleaseTimer === 0) {
       player.action = Math.abs(player.vx) > 0.5 ? "walk" : "idle";
     }
+  }
+
+  if (player.action === "powerEnd") {
+    player.vx = 0;
   }
 
   if (player.kamehamehaTimer > 0) {
@@ -3605,6 +5258,535 @@ function updatePlayer() {
     }
   }
 
+  if (player.action === "teleport") {
+    player.vx = 0;
+    player.vy = 0;
+
+    if (player.teleportPhase === "prep") {
+      if (player.frameIndex >= teleportPrepFrames.length - 1 && player.frameTimer === 0) {
+        player.teleportPhase = "move";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.teleportPhase === "move") {
+      if (!player.teleportHasMoved && player.frameIndex >= 1) {
+        player.x += player.teleportShiftX;
+        if (player.x < 0) player.x = 0;
+        const maxX = gameCanvas.width - getActionConfig().width;
+        if (player.x > maxX) {
+          player.x = maxX;
+        }
+        applyStageCamera();
+        player.teleportHasMoved = true;
+      }
+    }
+  }
+
+  if (player.action === "finalSkill") {
+    player.vx = 0;
+    player.isRunning = false;
+    player.isHovering = false;
+    player.wantsHover = false;
+    const isFinalSkillAirbornePhase =
+      player.finalSkillPhase === "teleportBehind";
+    if (player.finalSkillPhase !== "returnEnd" && !isFinalSkillAirbornePhase) {
+      player.vy = 0;
+      player.isJumping = false;
+      player.y = getPlayerGroundY();
+    } else if (isFinalSkillAirbornePhase) {
+      player.vy = 0;
+      player.isJumping = true;
+      player.y = getPlayerGroundY() - finalSkillAirHeight;
+    }
+
+    setFinalSkillParalysis(
+      player.finalSkillPhase === "intro" ||
+      player.finalSkillPhase === "charge" ||
+      player.finalSkillPhase === "blueCharge" ||
+      player.finalSkillPhase === "blueTransform" ||
+      player.finalSkillPhase === "blueEnd" ||
+        player.finalSkillPhase === "teleportPrep" ||
+        player.finalSkillPhase === "teleportMove" ||
+        player.finalSkillPhase === "strikePrep" ||
+        player.finalSkillPhase === "strikeReady" ||
+      player.finalSkillPhase === "strike" ||
+      player.finalSkillPhase === "secondStrikePrep" ||
+      player.finalSkillPhase === "secondStrikeReady" ||
+      player.finalSkillPhase === "secondStrike" ||
+      player.finalSkillPhase === "secondStrikeEnd"
+    );
+
+    if (player.finalSkillPhase === "intro") {
+      if (player.frameIndex >= finalSkillIntroFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "charge";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "charge") {
+      if (player.finalSkillChargeLoopTimer > 0) {
+        player.finalSkillChargeLoopTimer--;
+      }
+
+      if (player.finalSkillChargeLoopTimer === 0 && player.frameIndex >= finalSkillChargeFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "blueCharge";
+        player.finalSkillComboTimer = finalSkillBlueChargeDurationFrames;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        finalSkillShellEffect.active = false;
+        finalSkillShellEffect.phase = "idle";
+        finalSkillShellEffect.frameIndex = 0;
+        finalSkillShellEffect.frameTimer = 0;
+        finalSkillShellEffect.alpha = 0;
+        finalSkillFlashEffect.active = false;
+        finalSkillFlashEffect.frameIndex = 0;
+        finalSkillFlashEffect.frameTimer = 0;
+        finalSkillFlashEffect.alpha = 0;
+        finalSkillFlashEffect.overlayAlpha = 0;
+        finalSkillFlashEffect.overlayHoldTimer = 0;
+        finalSkillFlashEffect.overlayFadeTimer = 0;
+        finalSkillBlueEnergyEffect.active = true;
+        finalSkillBlueEnergyEffect.phase = "start";
+        finalSkillBlueEnergyEffect.frameIndex = 0;
+        finalSkillBlueEnergyEffect.frameTimer = 0;
+        finalSkillBlueEnergyEffect.alpha = 1;
+      }
+    } else if (player.finalSkillPhase === "blueCharge") {
+      if (player.finalSkillComboTimer > 0) {
+        player.finalSkillComboTimer--;
+      } else {
+        player.finalSkillPhase = "blueTransform";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        finalSkillBlueEnergyEffect.phase = "transform";
+        finalSkillBlueEnergyEffect.frameIndex = 0;
+        finalSkillBlueEnergyEffect.frameTimer = 0;
+        finalSkillBlueEnergyEffect.alpha = 1;
+        finalSkillPeakBurstEffect.active = true;
+        finalSkillPeakBurstEffect.frameIndex = 0;
+        finalSkillPeakBurstEffect.frameTimer = 0;
+        finalSkillPeakBurstEffect.alpha = 1;
+        finalSkillFlashEffect.active = true;
+        finalSkillFlashEffect.frameIndex = 0;
+        finalSkillFlashEffect.frameTimer = 0;
+        finalSkillFlashEffect.alpha = 1;
+        finalSkillFlashEffect.overlayAlpha = 0.96;
+        finalSkillFlashEffect.overlayHoldTimer = 2;
+        finalSkillFlashEffect.overlayFadeTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "blueTransform") {
+      if (!finalSkillBlueEnergyEffect.active) {
+        releaseAllFinalSkillParalysis();
+        player.finalSkillPhase = canTriggerFinalSkillCombo(finalSkillTargetBot) ? "blueEnd" : "noTargetEnd";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        player.finalSkillComboTimer = canTriggerFinalSkillCombo(finalSkillTargetBot) ? 34 : 0;
+        finalSkillFlashEffect.active = false;
+        finalSkillFlashEffect.frameIndex = 0;
+        finalSkillFlashEffect.frameTimer = 0;
+        finalSkillFlashEffect.alpha = 0;
+        finalSkillFlashEffect.overlayAlpha = 0;
+        finalSkillFlashEffect.overlayHoldTimer = 0;
+        finalSkillFlashEffect.overlayFadeTimer = 0;
+        finalSkillPeakBurstEffect.active = false;
+        finalSkillPeakBurstEffect.frameIndex = 0;
+        finalSkillPeakBurstEffect.frameTimer = 0;
+        finalSkillPeakBurstEffect.alpha = 0;
+      }
+    } else if (player.finalSkillPhase === "blueEnd") {
+      if (player.finalSkillComboTimer > 0) {
+        player.finalSkillComboTimer--;
+      } else {
+        player.finalSkillPhase = "teleportPrep";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "teleportPrep") {
+      if (player.frameIndex >= finalSkillComboTeleportPrepFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "teleportMove";
+        player.finalSkillTeleportHasMoved = false;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "teleportMove") {
+      if (!player.finalSkillTeleportHasMoved && player.frameIndex >= 1) {
+        if (finalSkillTargetBot && finalSkillTargetBot.isActive && !finalSkillTargetBot.isDown) {
+          const targetScreenX = getBotScreenX(finalSkillTargetBot);
+          const targetOnRight = finalSkillTargetBot.worldX >= getPlayerWorldX();
+          const targetCenterX = targetScreenX + finalSkillTargetBot.width * 0.5;
+          const destinationX = targetCenterX + (targetOnRight ? -94 : 94) - player.width * 0.5;
+          player.x = Math.round(Math.max(0, Math.min(gameCanvas.width - getActionConfig().width, destinationX)));
+          player.direction = targetOnRight ? 1 : -1;
+          applyStageCamera();
+        }
+        player.finalSkillTeleportHasMoved = true;
+      }
+
+      if (player.frameIndex >= finalSkillComboTeleportMoveFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "strikePrep";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "strikePrep") {
+      if (player.frameIndex >= finalSkillComboStrikePrepFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "strikeReady";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        player.finalSkillComboTimer = 40;
+      }
+    } else if (player.finalSkillPhase === "strikeReady") {
+      if (player.finalSkillComboTimer > 0) {
+        player.finalSkillComboTimer--;
+      } else {
+        player.finalSkillPhase = "strike";
+        player.finalSkillHitApplied = false;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "strike") {
+      if (!player.finalSkillHitApplied && finalSkillTargetBot && finalSkillTargetBot.isActive && !finalSkillTargetBot.isDown) {
+        applyDamageToBot(finalSkillTargetBot, {
+          damage: 28,
+          knockback: 14,
+          launchY: -8.6,
+          hitstun: 30,
+          suppressDefaultHitEffect: true
+        });
+        if (finalSkillBotHitFrames.length > 0) {
+          finalSkillBotHitEffects.push({
+            frames: finalSkillBotHitFrames,
+            worldX: finalSkillTargetBot.worldX + finalSkillTargetBot.width * 0.5,
+            y: finalSkillTargetBot.y + finalSkillTargetBot.height * 0.44,
+            direction: finalSkillTargetBot.direction,
+            frameIndex: 0,
+            frameTimer: 0,
+            frameDelay: 3,
+            alpha: 0.98,
+            scale: 1.22
+          });
+        }
+        player.finalSkillHitApplied = true;
+      }
+
+      if (player.frameIndex >= finalSkillComboStrikeFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "secondStrikePrep";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        player.finalSkillHitApplied = false;
+      }
+    } else if (player.finalSkillPhase === "secondStrikePrep") {
+      if (player.frameIndex >= finalSkillComboSecondStrikePrepFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "secondStrikeReady";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        player.finalSkillComboTimer = 40;
+      }
+    } else if (player.finalSkillPhase === "secondStrikeReady") {
+      if (player.finalSkillComboTimer > 0) {
+        player.finalSkillComboTimer--;
+      } else {
+        player.finalSkillPhase = "secondStrike";
+        player.finalSkillHitApplied = false;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "secondStrike") {
+      if (!player.finalSkillHitApplied && finalSkillTargetBot && finalSkillTargetBot.isActive && !finalSkillTargetBot.isDown) {
+        finalSkillTargetBot.finalSkillHeld = false;
+        finalSkillTargetBot.finalSkillHoldY = null;
+        applyDamageToBot(finalSkillTargetBot, {
+          damage: 32,
+          knockback: 16,
+          launchY: -200,
+          hitstun: 52,
+          suppressDefaultHitEffect: true
+        });
+        if (finalSkillBotSecondHitFrames.length > 0) {
+          finalSkillBotHitEffects.push({
+            frames: finalSkillBotSecondHitFrames,
+            worldX: finalSkillTargetBot.worldX + finalSkillTargetBot.width * 0.5,
+            y: finalSkillTargetBot.y + finalSkillTargetBot.height * 0.44,
+            direction: finalSkillTargetBot.direction,
+            frameIndex: 0,
+            frameTimer: 0,
+            frameDelay: 5,
+            alpha: 0.98,
+            scale: 1.52
+          });
+        }
+        player.finalSkillHitApplied = true;
+      }
+
+      if (player.frameIndex >= finalSkillComboSecondStrikeFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "secondStrikeEnd";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "secondStrikeEnd") {
+      if (player.frameIndex >= finalSkillComboSecondStrikeEndFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "kameCharge";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        player.finalSkillHitApplied = false;
+        finalSkillKameChargeSound.currentTime = 0;
+        finalSkillKameChargeSound.play().catch(() => {});
+        if (finalSkillTargetBot && finalSkillTargetBot.isActive && !finalSkillTargetBot.isDown) {
+          player.direction = finalSkillTargetBot.worldX >= getPlayerWorldX() ? 1 : -1;
+          finalSkillTargetBot.finalSkillHeld = true;
+          finalSkillTargetBot.finalSkillHoldY = Math.max(getBotGroundY() - 240, 60);
+          finalSkillTargetBot.vx = 0;
+          finalSkillTargetBot.vy = 0;
+        }
+      }
+    } else if (player.finalSkillPhase === "noTargetEnd") {
+      if (player.frameIndex >= finalSkillNoTargetEndFrames.length - 1 && player.frameTimer === 0) {
+        releaseAllFinalSkillParalysis();
+        player.finalSkillPhase = "idle";
+        player.action = "idle";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        finalSkillRevealBurstEffect.fadeOut = true;
+        finalSkillTargetBot = null;
+      }
+    } else if (player.finalSkillPhase === "teleportIn") {
+      if (!player.finalSkillTeleportHasMoved && player.finalSkillComboTimer <= Math.ceil(finalSkillTeleportHoldFrames / 2)) {
+        player.x += player.finalSkillTeleportShiftX;
+        player.x = Math.max(0, Math.min(gameCanvas.width - getActionConfig().width, player.x));
+        applyStageCamera();
+        player.finalSkillTeleportHasMoved = true;
+      }
+      if (player.finalSkillComboTimer > 0) {
+        player.finalSkillComboTimer--;
+      } else {
+        player.finalSkillPhase = "kickPrep";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "kickPrep") {
+      if (player.frameIndex >= finalSkillKickPrepFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "kick";
+        player.finalSkillHitApplied = false;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "kick") {
+      if (!player.finalSkillHitApplied && player.frameIndex >= 1) {
+        if (finalSkillTargetBot && finalSkillTargetBot.isActive) {
+          applyDamageToBot(finalSkillTargetBot, {
+            damage: 20,
+            knockback: 0,
+            launchY: -14.2,
+            hitstun: 32
+          });
+          finalSkillTargetBot.finalSkillHeld = true;
+          finalSkillTargetBot.finalSkillHoldY = Math.max(getBotGroundY() - finalSkillAirHeight, 120);
+        }
+        player.finalSkillHitApplied = true;
+      }
+      if (player.frameIndex >= finalSkillKickFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "kickEnd";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "kickEnd") {
+      if (player.frameIndex >= finalSkillKickEndFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "teleportBehind";
+        player.finalSkillComboTimer = finalSkillTeleportHoldFrames;
+        player.finalSkillTeleportHasMoved = false;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        if (finalSkillTargetBot && finalSkillTargetBot.isActive) {
+          const targetScreenX = getBotScreenX(finalSkillTargetBot);
+          const destinationX =
+            targetScreenX +
+            (finalSkillTargetBot.direction === -1 ? 140 : -140) -
+            player.width * 0.5;
+          player.finalSkillTeleportShiftX = destinationX - player.x;
+          player.direction = finalSkillTargetBot.worldX > getPlayerWorldX() ? -1 : 1;
+        } else {
+          player.finalSkillTeleportShiftX = -player.direction * 180;
+          player.direction *= -1;
+        }
+      }
+    } else if (player.finalSkillPhase === "teleportBehind") {
+      if (!player.finalSkillTeleportHasMoved && player.finalSkillComboTimer <= Math.ceil(finalSkillTeleportHoldFrames / 2)) {
+        player.x += player.finalSkillTeleportShiftX;
+        player.x = Math.max(0, Math.min(gameCanvas.width - getActionConfig().width, player.x));
+        applyStageCamera();
+        player.finalSkillTeleportHasMoved = true;
+      }
+      if (player.finalSkillComboTimer > 0) {
+        player.finalSkillComboTimer--;
+      } else {
+        player.finalSkillPhase = "kameCharge";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        finalSkillKameChargeSound.currentTime = 0;
+        finalSkillKameChargeSound.play().catch(() => {});
+      }
+    } else if (player.finalSkillPhase === "kameCharge") {
+      if (finalSkillTargetBot && finalSkillTargetBot.isActive && !finalSkillTargetBot.isDown) {
+        finalSkillTargetBot.finalSkillHeld = true;
+        finalSkillTargetBot.finalSkillHoldY = Math.max(getBotGroundY() - 240, 60);
+      }
+      if (player.frameIndex >= finalSkillKameChargeFrames.length - 1 && player.frameTimer === 0) {
+        player.finalSkillPhase = "kamePrep";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "kamePrep") {
+      if (finalSkillTargetBot && finalSkillTargetBot.isActive && !finalSkillTargetBot.isDown) {
+        finalSkillTargetBot.finalSkillHeld = true;
+        finalSkillTargetBot.finalSkillHoldY = Math.max(getBotGroundY() - 240, 60);
+      }
+      if (player.frameIndex >= finalSkillKamePrepFrames.length - 1 && player.frameTimer === 0) {
+        finalSkillKameChargeSound.pause();
+        finalSkillKameChargeSound.currentTime = 0;
+        player.finalSkillPhase = "kameFire";
+        player.finalSkillComboTimer = finalSkillKameFireDurationFrames;
+        player.finalSkillHitApplied = false;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "kameFire") {
+      if (!player.finalSkillHitApplied) {
+        if (finalSkillTargetBot && finalSkillTargetBot.isActive) {
+          finalSkillTargetBot.finalSkillHeld = false;
+          finalSkillTargetBot.finalSkillHoldY = null;
+          applyDamageToBot(finalSkillTargetBot, {
+            damage: 36,
+            knockback: 12,
+            launchY: -2.8,
+            hitstun: 34
+          });
+        }
+        player.finalSkillHitApplied = true;
+      }
+      if (player.finalSkillComboTimer > 0) {
+        player.finalSkillComboTimer--;
+      } else {
+        player.finalSkillPhase = "kameEnd";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        finalSkillRevealBurstEffect.active = false;
+        finalSkillRevealBurstEffect.frameIndex = 0;
+        finalSkillRevealBurstEffect.frameTimer = 0;
+        finalSkillRevealBurstEffect.alpha = 0;
+        finalSkillRevealBurstEffect.fadeOut = false;
+      }
+    } else if (player.finalSkillPhase === "kameEnd") {
+      if (player.frameIndex >= finalSkillKameEndFrames.length - 1 && player.frameTimer === 0) {
+        if (finalSkillTargetBot && finalSkillTargetBot.isActive) {
+          finalSkillTargetBot.finalSkillHeld = false;
+          finalSkillTargetBot.finalSkillHoldY = null;
+        }
+        player.finalSkillPhase = "returnFlash";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        finalSkillFlashEffect.active = true;
+        finalSkillFlashEffect.frameIndex = 0;
+        finalSkillFlashEffect.frameTimer = 0;
+        finalSkillFlashEffect.alpha = 1;
+        finalSkillFlashEffect.overlayAlpha = 1;
+        finalSkillFlashEffect.overlayHoldTimer = 10;
+        finalSkillFlashEffect.overlayFadeTimer = 0;
+      }
+    } else if (player.finalSkillPhase === "returnFlash") {
+      const flashFramesDone = player.frameIndex >= finalSkillReturnFlashFrames.length - 1 && player.frameTimer === 0;
+      if (flashFramesDone && !finalSkillFlashEffect.active) {
+        player.finalSkillPhase = "returnEnd";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        player.finalSkillFallSpeed = 0;
+        player.vy = 0;
+        player.isJumping = false;
+        player.y = getPlayerGroundY();
+        player.direction = 1;
+      }
+    } else if (player.finalSkillPhase === "returnEnd") {
+      const endFinished = player.frameIndex >= finalSkillReturnEndFrames.length - 1 && player.frameTimer === 0;
+      if (endFinished) {
+        if (finalSkillTargetBot && finalSkillTargetBot.isActive) {
+          finalSkillTargetBot.finalSkillHeld = false;
+          finalSkillTargetBot.finalSkillHoldY = null;
+        }
+        player.finalSkillPhase = "idle";
+        player.action = "idle";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+        finalSkillRevealBurstEffect.active = false;
+        finalSkillRevealBurstEffect.frameIndex = 0;
+        finalSkillRevealBurstEffect.frameTimer = 0;
+        finalSkillRevealBurstEffect.alpha = 0;
+        finalSkillRevealBurstEffect.fadeOut = false;
+        finalSkillFlashEffect.active = false;
+        finalSkillFlashEffect.frameIndex = 0;
+        finalSkillFlashEffect.frameTimer = 0;
+        finalSkillFlashEffect.alpha = 0;
+        finalSkillFlashEffect.overlayAlpha = 0;
+        finalSkillFlashEffect.overlayHoldTimer = 0;
+        finalSkillFlashEffect.overlayFadeTimer = 0;
+        finalSkillTargetBot = null;
+      }
+    }
+  }
+
+  if (player.action === "goldKiBlast") {
+    player.vx = 0;
+
+    if (player.goldKiBlastPhase === "prep") {
+      if (player.frameIndex >= goldKiBlastPrepFrames.length - 1 && player.frameTimer === 0) {
+        player.goldKiBlastPhase = "fire";
+        player.goldKiBlastLoopTimer = goldKiBlastLoopDurationFrames;
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    } else if (player.goldKiBlastPhase === "fire") {
+      if (player.goldKiBlastLoopTimer > 0) {
+        player.goldKiBlastLoopTimer--;
+      }
+
+      if (
+        player.goldKiBlastLoopTimer === 0 &&
+        player.frameIndex >= goldKiBlastFireFrames.length - 1 &&
+        player.frameTimer === 0
+      ) {
+        player.goldKiBlastPhase = "end";
+        player.frameIndex = 0;
+        player.frameTimer = 0;
+      }
+    }
+  }
+
+  const shouldShowGoldKiBlastLoop =
+    player.action === "goldKiBlast" && player.goldKiBlastPhase === "fire";
+
+  if (!shouldShowGoldKiBlastLoop) {
+    goldKiBlastLoopEffect.targetAlpha = 0;
+  } else {
+    goldKiBlastLoopEffect.active = true;
+    goldKiBlastLoopEffect.targetAlpha = 0.98;
+    goldKiBlastLoopEffect.scale = 1;
+    goldKiBlastLoopEffect.frameTimer++;
+
+    if (goldKiBlastLoopEffect.frameTimer >= goldKiBlastLoopEffect.frameDelay) {
+      goldKiBlastLoopEffect.frameTimer = 0;
+      goldKiBlastLoopEffect.frameIndex =
+        (goldKiBlastLoopEffect.frameIndex + 1) % goldKiBlastProjectileFrames.length;
+    }
+  }
+
+  goldKiBlastLoopEffect.alpha +=
+    (goldKiBlastLoopEffect.targetAlpha - goldKiBlastLoopEffect.alpha) * 0.18;
+
+  if (!shouldShowGoldKiBlastLoop && goldKiBlastLoopEffect.alpha < 0.02) {
+    goldKiBlastLoopEffect.active = false;
+    goldKiBlastLoopEffect.frameIndex = 0;
+    goldKiBlastLoopEffect.frameTimer = 0;
+    goldKiBlastLoopEffect.alpha = 0;
+    goldKiBlastLoopEffect.targetAlpha = 0;
+    goldKiBlastLoopEffect.scale = 1;
+  }
+
   if (player.action === "kamehameha") {
     player.vx = 0;
 
@@ -3637,7 +5819,7 @@ function updatePlayer() {
     player.isRunning = false;
   } else if (player.action === "walkKick") {
     player.isRunning = false;
-  } else if (player.action === "kiBlast") {
+  } else if (player.action === "kiBlast" || player.action === "goldKiBlast" || player.action === "teleport" || player.action === "finalSkill") {
     player.isRunning = false;
   } else if (player.action === "attack") {
     player.isRunning = false;
@@ -3798,8 +5980,37 @@ function updatePlayer() {
     finishKiBlast();
   }
 
+  if (
+    player.action === "teleport" &&
+    player.teleportPhase === "move" &&
+    player.frameIndex >= teleportMoveFrames.length - 1 &&
+    player.frameTimer === 0
+  ) {
+    finishKiBlast();
+  }
+
+  if (
+    player.action === "goldKiBlast" &&
+    player.goldKiBlastPhase === "end" &&
+    player.frameIndex >= goldKiBlastEndFrames.length - 1 &&
+    player.frameTimer === 0
+  ) {
+    finishKiBlast();
+  }
+
   if (!keys.enter && player.action === "power") {
     player.powerPrepTimer = 0;
+    if (player.powerFullCharge && powerEndFrames.length > 0) {
+      player.action = "powerEnd";
+    } else {
+      player.powerReleaseTimer = 8;
+      player.action = "powerRelease";
+    }
+    player.frameIndex = 0;
+    player.frameTimer = 0;
+  }
+
+  if (player.action === "powerEnd" && player.frameIndex >= powerEndFrames.length - 1 && player.frameTimer === 0) {
     player.powerReleaseTimer = 8;
     player.action = "powerRelease";
     player.frameIndex = 0;
@@ -3901,7 +6112,7 @@ function updatePlayer() {
         player.kameLoopCycles = 0;
         player.frameIndex = 0;
       } else if (player.kamePhase === "loop") {
-        if (player.kameLoopCycles >= 240) {
+        if (player.kameLoopCycles >= 180) {
           player.kamePhase = "charge";
           player.kameFireHoldTimer = kameFireHoldFrames;
           player.frameIndex = 0;
@@ -4149,6 +6360,255 @@ function drawKameFireEffect() {
   ctx.restore();
 }
 
+function drawFinalSkillAuraEffect() {
+  if (!finalSkillAuraEffect.active || finalSkillAuraEffect.alpha <= 0 || finalSkillAuraFrames.length === 0) return;
+
+  const img = finalSkillAuraFrames[finalSkillAuraEffect.frameIndex];
+  if (!img || !img.complete) return;
+
+  const drawWidth = Math.round(260 * finalSkillAuraEffect.scale);
+  const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
+  const drawHeight = Math.round(drawWidth / aspectRatio);
+  const drawX = Math.round(player.x + player.width / 2 - drawWidth / 2);
+  const drawY = Math.round(getPlayerLineY() - drawHeight + 26);
+
+  ctx.save();
+  if (player.direction === -1) {
+    const centerX = drawX + drawWidth / 2;
+    ctx.translate(centerX, 0);
+    ctx.scale(-1, 1);
+    ctx.translate(-centerX, 0);
+  }
+  ctx.globalAlpha = finalSkillAuraEffect.alpha;
+  ctx.globalCompositeOperation = "screen";
+  const shouldTintFinalAuraBlue =
+    player.finalSkillPhase === "blueCharge" ||
+    player.finalSkillPhase === "blueTransform" ||
+    player.finalSkillPhase === "blueEnd" ||
+    player.finalSkillPhase === "teleportPrep" ||
+    player.finalSkillPhase === "teleportMove";
+  ctx.filter =
+    shouldTintFinalAuraBlue
+      ? "hue-rotate(175deg) saturate(1.45) brightness(1.28) contrast(1.1)"
+      : "brightness(1.24) saturate(1.18) contrast(1.08)";
+  ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+  ctx.restore();
+}
+
+function drawFinalSkillBlueEnergyEffect() {
+  if (!finalSkillBlueEnergyEffect.active) return;
+
+  const blueFrames =
+    finalSkillBlueEnergyEffect.phase === "start"
+      ? finalSkillBlueEnergyStartFrames
+      : finalSkillBlueEnergyEffect.phase === "loop"
+        ? finalSkillBlueEnergyLoopFrames
+        : finalSkillBlueEnergyTransformFrames;
+  const img = blueFrames[Math.min(finalSkillBlueEnergyEffect.frameIndex, blueFrames.length - 1)];
+  if (!img || !img.complete) return;
+
+  const drawWidth = 720;
+  const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
+  const drawHeight = Math.round(drawWidth / aspectRatio);
+  const drawX = Math.round(player.x + player.width / 2 - drawWidth / 2);
+  const drawY = Math.round(getPlayerLineY() - drawHeight + 69);
+
+  ctx.save();
+  if (player.direction === -1) {
+    const centerX = drawX + drawWidth / 2;
+    ctx.translate(centerX, 0);
+    ctx.scale(-1, 1);
+    ctx.translate(-centerX, 0);
+  }
+  ctx.globalAlpha = finalSkillBlueEnergyEffect.alpha;
+  ctx.globalCompositeOperation = "screen";
+  ctx.filter = "brightness(1.2) saturate(1.22) contrast(1.08)";
+  ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+  ctx.restore();
+}
+
+function drawFinalSkillPeakBurstEffect() {
+  if (!finalSkillPeakBurstEffect.active || finalSkillPeakBurstFrames.length === 0) return;
+
+  const img =
+    finalSkillPeakBurstFrames[
+      Math.min(finalSkillPeakBurstEffect.frameIndex, finalSkillPeakBurstFrames.length - 1)
+    ];
+  if (!img || !img.complete) return;
+
+  const drawWidth = 760;
+  const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
+  const drawHeight = Math.round(drawWidth / aspectRatio);
+  const drawX = Math.round(player.x + player.width / 2 - drawWidth / 2);
+  const drawY = Math.round(getPlayerLineY() - drawHeight + 82);
+
+  ctx.save();
+  if (player.direction === -1) {
+    const centerX = drawX + drawWidth / 2;
+    ctx.translate(centerX, 0);
+    ctx.scale(-1, 1);
+    ctx.translate(-centerX, 0);
+  }
+  ctx.globalAlpha = finalSkillPeakBurstEffect.alpha;
+  ctx.globalCompositeOperation = "screen";
+  ctx.filter = "brightness(1.16) saturate(1.12) contrast(1.08)";
+  ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+  ctx.restore();
+}
+
+function drawFinalSkillDarkOverlay() {
+  if (player.action !== "finalSkill") return;
+
+  const darkAlpha =
+    player.finalSkillPhase === "intro"
+      ? 0.2
+      : player.finalSkillPhase === "charge"
+        ? 0.3 + (Math.sin(Date.now() * 0.01) + 1) * 0.03
+        : player.finalSkillPhase === "blueCharge"
+          ? 0.34 + (Math.sin(Date.now() * 0.012) + 1) * 0.04
+          : player.finalSkillPhase === "blueTransform"
+            ? 0.42
+        : player.finalSkillPhase === "shellExpand" || player.finalSkillPhase === "shellLoop"
+          ? 0.42
+          : player.finalSkillPhase === "shellCollapse"
+            ? 0.18
+            : 0;
+
+  if (darkAlpha <= 0) return;
+
+  ctx.save();
+  ctx.fillStyle = `rgba(6, 10, 18, ${darkAlpha})`;
+  ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+  ctx.restore();
+}
+
+function drawFinalSkillShellEffect() {
+  if (!finalSkillShellEffect.active) return;
+
+  const shellFrames =
+    finalSkillShellEffect.phase === "expand"
+      ? finalSkillShellExpandFrames
+      : finalSkillShellEffect.phase === "loop"
+        ? finalSkillShellLoopFrames
+        : finalSkillShellCollapseFrames;
+  const img = shellFrames[Math.min(finalSkillShellEffect.frameIndex, shellFrames.length - 1)];
+  if (!img || !img.complete) return;
+
+  const drawWidth = Math.round(520 * finalSkillShellEffect.scale);
+  const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
+  const drawHeight = Math.round(drawWidth / aspectRatio);
+  const drawX = Math.round(player.x + player.width / 2 - drawWidth / 2);
+  const drawY = Math.round(getPlayerLineY() - drawHeight + 54);
+
+  ctx.save();
+  if (player.direction === -1) {
+    const centerX = drawX + drawWidth / 2;
+    ctx.translate(centerX, 0);
+    ctx.scale(-1, 1);
+    ctx.translate(-centerX, 0);
+  }
+  ctx.globalAlpha = finalSkillShellEffect.alpha || 1;
+  ctx.globalCompositeOperation = "screen";
+  ctx.filter = "brightness(1.24) saturate(1.12) contrast(1.06)";
+  ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+  ctx.restore();
+}
+
+function drawFinalSkillFlashEffect() {
+  if (!finalSkillFlashEffect.active || finalSkillFlashFrames.length === 0) return;
+
+  const img = finalSkillFlashFrames[Math.min(finalSkillFlashEffect.frameIndex, finalSkillFlashFrames.length - 1)];
+  if (img && img.complete) {
+    ctx.save();
+    ctx.globalAlpha = finalSkillFlashEffect.alpha;
+    ctx.globalCompositeOperation = "screen";
+    ctx.drawImage(img, 0, 0, gameCanvas.width, gameCanvas.height);
+    ctx.restore();
+  }
+
+  ctx.save();
+  ctx.fillStyle = `rgba(255,255,255,${finalSkillFlashEffect.overlayAlpha})`;
+  ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+  ctx.restore();
+}
+
+function drawFinalSkillRevealBurstEffect() {
+  if (!finalSkillRevealBurstEffect.active || finalSkillRevealBurstFrames.length === 0) return;
+
+  const img =
+    finalSkillRevealBurstFrames[
+      Math.min(finalSkillRevealBurstEffect.frameIndex, finalSkillRevealBurstFrames.length - 1)
+    ];
+  if (!img || !img.complete) return;
+
+  const scale = Math.max(gameCanvas.width / img.naturalWidth, gameCanvas.height / img.naturalHeight);
+  const drawWidth = Math.round(img.naturalWidth * scale);
+  const drawHeight = Math.round(img.naturalHeight * scale);
+  const drawX = Math.round((gameCanvas.width - drawWidth) / 2);
+  const drawY = Math.round((gameCanvas.height - drawHeight) / 2);
+
+  ctx.save();
+  ctx.globalAlpha = finalSkillRevealBurstEffect.alpha;
+  ctx.globalCompositeOperation = "screen";
+  ctx.filter = "brightness(1.26) saturate(1.16) contrast(1.08)";
+  ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+  ctx.restore();
+}
+
+function drawFinalSkillKameEffect() {
+  const effectFrames =
+    finalSkillKameEffect.phase === "start"
+      ? finalSkillKameEffectStartFrames
+      : finalSkillKameEffectLoopFrames;
+  if (!finalSkillKameEffect.active || effectFrames.length === 0) return;
+
+  const img =
+    effectFrames[
+      Math.min(finalSkillKameEffect.frameIndex, effectFrames.length - 1)
+    ];
+  if (!img || !img.complete) return;
+
+  const drawWidth = finalSkillKameEffectWidth;
+  const aspectRatio = img.naturalWidth / img.naturalHeight || 1;
+  const drawHeight = Math.round(drawWidth / aspectRatio);
+  const anchorX = player.x + player.width / 2 + player.direction * finalSkillKameOffsetX;
+  const anchorY = getPlayerLineY() - finalSkillKameOffsetY;
+  const rotation = player.direction === 1 ? -Math.PI / 4 : Math.PI / 4;
+
+  ctx.save();
+  ctx.translate(Math.round(anchorX), Math.round(anchorY));
+  ctx.rotate(rotation);
+  ctx.globalAlpha = finalSkillKameEffect.alpha;
+  ctx.globalCompositeOperation = "screen";
+  ctx.filter = "brightness(1.22) saturate(1.14) contrast(1.06)";
+  ctx.drawImage(img, -24, -Math.round(drawHeight / 2), drawWidth, drawHeight);
+  ctx.restore();
+
+  if (!finalSkillKameDebugArrow) return;
+
+  ctx.save();
+  ctx.strokeStyle = "rgba(255, 80, 80, 0.95)";
+  ctx.fillStyle = "rgba(255, 80, 80, 0.95)";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(Math.round(player.x + player.width / 2), Math.round(anchorY));
+  ctx.lineTo(Math.round(anchorX), Math.round(anchorY));
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(Math.round(anchorX), Math.round(anchorY));
+  ctx.lineTo(Math.round(anchorX - player.direction * 18), Math.round(anchorY - 8));
+  ctx.lineTo(Math.round(anchorX - player.direction * 18), Math.round(anchorY + 8));
+  ctx.closePath();
+  ctx.fill();
+  ctx.font = "14px Arial";
+  ctx.fillText(
+    `kame x:${finalSkillKameOffsetX} y:${finalSkillKameOffsetY}`,
+    Math.round(anchorX - 72),
+    Math.round(anchorY - 14)
+  );
+  ctx.restore();
+}
+
 function updateMana() {
   const isChargingMana =
     player.action === "powerPrep" ||
@@ -4158,10 +6618,14 @@ function updateMana() {
     player.mana = Math.min(player.maxMana, player.mana + 0.22);
     player.power = Math.min(player.maxPower, player.power + 0.16);
   }
+
+  player.powerFullCharge = player.power > powerGoldThreshold;
 }
 
 function takeDamage(amount, options = {}) {
-  if (player.action === "out") return;
+  if (player.action === "out" || player.action === "finalSkill") return;
+  finalSkillKameChargeSound.pause();
+  finalSkillKameChargeSound.currentTime = 0;
   player.health = Math.max(0, player.health - amount);
   player.damageFlashTimer = 8;
   player.attackTimer = 0;
@@ -4169,11 +6633,71 @@ function takeDamage(amount, options = {}) {
   player.kiBlastCooldown = 0;
   player.kiBlastHasFired = false;
   player.kiBlastShotsFired = 0;
+  player.kiBlastVariant = "default";
+  player.goldKiBlastPhase = "idle";
+  player.goldKiBlastLoopTimer = 0;
+  player.teleportPhase = "idle";
+  player.teleportShiftX = 0;
+  player.teleportHasMoved = false;
+  player.finalSkillPhase = "idle";
+  player.finalSkillChargeLoopTimer = 0;
+  player.finalSkillShellLoopTimer = 0;
+  player.finalSkillComboTimer = 0;
+  player.finalSkillTeleportShiftX = 0;
+  player.finalSkillTeleportHasMoved = false;
+  player.finalSkillHitApplied = false;
+  player.finalSkillFallSpeed = 0;
+  finalSkillTargetBot = null;
+  goldKiBlastLoopEffect.active = false;
+  goldKiBlastLoopEffect.frameIndex = 0;
+  goldKiBlastLoopEffect.frameTimer = 0;
+  goldKiBlastLoopEffect.alpha = 0;
+  goldKiBlastLoopEffect.targetAlpha = 0;
+  goldKiBlastLoopEffect.scale = 1;
+  finalSkillAuraEffect.active = false;
+  finalSkillAuraEffect.frameIndex = 0;
+  finalSkillAuraEffect.frameTimer = 0;
+  finalSkillAuraEffect.alpha = 0;
+  finalSkillAuraEffect.targetAlpha = 0;
+  finalSkillAuraEffect.scale = 1;
+  finalSkillShellEffect.active = false;
+  finalSkillShellEffect.phase = "idle";
+  finalSkillShellEffect.frameIndex = 0;
+  finalSkillShellEffect.frameTimer = 0;
+  finalSkillShellEffect.alpha = 0;
+  finalSkillShellEffect.scale = 1;
+  finalSkillFlashEffect.active = false;
+  finalSkillFlashEffect.frameIndex = 0;
+  finalSkillFlashEffect.frameTimer = 0;
+  finalSkillFlashEffect.alpha = 0;
+  finalSkillFlashEffect.overlayAlpha = 0;
+  finalSkillFlashEffect.overlayHoldTimer = 0;
+  finalSkillFlashEffect.overlayFadeTimer = 0;
+  finalSkillRevealBurstEffect.active = false;
+  finalSkillRevealBurstEffect.frameIndex = 0;
+  finalSkillRevealBurstEffect.frameTimer = 0;
+  finalSkillRevealBurstEffect.alpha = 0;
+  finalSkillRevealBurstEffect.fadeOut = false;
+  finalSkillKameEffect.active = false;
+  finalSkillKameEffect.phase = "start";
+  finalSkillKameEffect.frameIndex = 0;
+  finalSkillKameEffect.frameTimer = 0;
+  finalSkillKameEffect.alpha = 0;
+  finalSkillBlueEnergyEffect.active = false;
+  finalSkillBlueEnergyEffect.phase = "idle";
+  finalSkillBlueEnergyEffect.frameIndex = 0;
+  finalSkillBlueEnergyEffect.frameTimer = 0;
+  finalSkillBlueEnergyEffect.alpha = 0;
+  finalSkillPeakBurstEffect.active = false;
+  finalSkillPeakBurstEffect.frameIndex = 0;
+  finalSkillPeakBurstEffect.frameTimer = 0;
+  finalSkillPeakBurstEffect.alpha = 0;
   player.kiBlastMoveAction = "idle";
   player.jumpPrepTimer = 0;
   player.crouchPrepTimer = 0;
   player.powerPrepTimer = 0;
   player.powerReleaseTimer = 0;
+  player.powerFullCharge = false;
   player.kameHasFired = false;
   player.kamehamehaTimer = 0;
   player.kamePhase = "idle";
@@ -4216,6 +6740,7 @@ function heal(amount) {
 function updateStatusHud() {
   const hpPercent = Math.max(0, Math.min(100, (player.health / player.maxHealth) * 100));
   const powerPercent = Math.max(0, Math.min(100, (player.power / player.maxPower) * 100));
+  const bluePowerCap = 100;
 
   if (healthHudFill) {
     healthHudFill.style.width = `${hpPercent}%`;
@@ -4242,6 +6767,18 @@ function updateStatusHud() {
 
   if (powerHudFill) {
     powerHudFill.style.width = `${powerPercent}%`;
+
+    if (player.power <= bluePowerCap) {
+      powerHudFill.style.background = "linear-gradient(90deg, #004cff 0%, #00ccff 100%)";
+      powerHudFill.style.boxShadow = "0 0 12px rgba(0, 204, 255, 0.55)";
+    } else {
+      const filledAmount = Math.max(1, player.power);
+      const blueStop = Math.max(0, Math.min(100, (bluePowerCap / filledAmount) * 100));
+      powerHudFill.style.background =
+        `linear-gradient(90deg, #004cff 0%, #00ccff ${blueStop}%, #ffd24a ${blueStop}%, #ff9f1a 100%)`;
+      powerHudFill.style.boxShadow =
+        "0 0 12px rgba(255, 196, 64, 0.6), 0 0 20px rgba(0, 204, 255, 0.28)";
+    }
   }
 
   if (hpText) {
@@ -4352,7 +6889,9 @@ function drawCappedHudBar(frame, fill, cap, options = {}) {
 function drawPowerLightningEffect() {
   if (powerBarUi) {
     const isPowerFull = player.power >= player.maxPower;
+    const isManaFull = player.mana >= player.maxMana;
     powerBarUi.classList.toggle("is-surged", isPowerFull);
+    powerBarUi.classList.toggle("is-mana-full", isManaFull);
   }
 }
 
@@ -4387,6 +6926,9 @@ function gameLoop(timestamp = 0) {
   desertWindOffset += deltaMs * 0.18;
   updateCameraShake();
   updateSceneCamera();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = selectedStage.id === "stage2" ? "#7c492d" : "#032d13";
+  ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
   ctx.save();
   ctx.translate(Math.round(cameraShake.x), Math.round(cameraShake.y));
   if (sceneCamera.zoom !== 1) {
@@ -4398,6 +6940,7 @@ function gameLoop(timestamp = 0) {
   }
 
   drawBackground();
+  drawFinalSkillDarkOverlay();
   updatePlayer();
   updateTrainingBot();
   updateDust();
@@ -4408,11 +6951,16 @@ function gameLoop(timestamp = 0) {
   updateKiBlastProjectiles();
   updateKiBlastImpactEffects();
   updateKameDamageOnBots();
+  updateFinalSkillKameDamageOnBots();
+  updateGoldKiBlastDamageOnBots();
   updateKameHitEffects();
+  updateEnemySkillHitEffects();
   updateMana();
   updatePowerLightningEffect();
+  updateFinalSkillEffects();
   updateKameLoopEffect();
   updateKameFireEffect();
+  updateFinalSkillBotHitEffects();
   drawBurstEffects();
   drawDust();
   drawSoftDustEffects();
@@ -4420,7 +6968,15 @@ function gameLoop(timestamp = 0) {
   drawKiBlastProjectiles();
   drawKiBlastImpactEffects();
   drawKameHitEffects();
+  drawEnemySkillHitEffects();
   drawPlayer();
+  drawFinalSkillKameEffect();
+  drawFinalSkillBotHitEffects();
+  drawFinalSkillAuraEffect();
+  drawFinalSkillBlueEnergyEffect();
+  drawFinalSkillPeakBurstEffect();
+  drawFinalSkillShellEffect();
+  drawGoldKiBlastLoopEffect();
   drawKameLoopEffect();
   drawKameFireEffect();
   drawKiBlastShootEffects();
@@ -4429,6 +6985,8 @@ function gameLoop(timestamp = 0) {
   drawAuraEffect();
   drawStage2WindOverlay();
   ctx.restore();
+  drawFinalSkillRevealBurstEffect();
+  drawFinalSkillFlashEffect();
   updateStatusHud();
   drawHealthHud();
   drawManaHud();
@@ -4469,7 +7027,9 @@ if (toggleBotSpamBtn) {
     botSpamEnabled = !botSpamEnabled;
     if (!botSpamEnabled) {
       spamBots.length = 0;
+      botSpamDelayTimer = botSpamStartDelayFrames;
     } else {
+      botSpamDelayTimer = botSpamStartDelayFrames;
       nextSpamBotWorldX = Math.max(nextSpamBotWorldX, getPlayerWorldX() + 1320);
     }
     updateBotMenuButtons();
@@ -4490,13 +7050,29 @@ if (pcModeBtn) {
 
 if (guideBtn && guideModal) {
   guideBtn.addEventListener("click", () => {
-    guideModal.classList.remove("hidden");
+    openGuideModal();
   });
 }
 
 if (closeGuideBtn && guideModal) {
   closeGuideBtn.addEventListener("click", () => {
-    guideModal.classList.add("hidden");
+    closeGuideModal();
+  });
+}
+
+if (openGuideInGameBtn) {
+  openGuideInGameBtn.addEventListener("click", () => {
+    openGuideModal({ pauseGame: true });
+  });
+}
+
+if (hudPauseBtn) {
+  hudPauseBtn.addEventListener("click", () => {
+    if (isPauseMenuOpen) {
+      closePauseMenu();
+    } else {
+      openPauseMenu();
+    }
   });
 }
 
@@ -4518,8 +7094,22 @@ if (pauseResetBtn) {
 
 window.addEventListener("keydown", (e) => {
   const key = e.key.toLowerCase();
+  if (finalSkillKameDebugArrow && key.startsWith("arrow")) {
+    const step = e.shiftKey ? 10 : 2;
+    if (key === "arrowleft") finalSkillKameOffsetX -= step;
+    if (key === "arrowright") finalSkillKameOffsetX += step;
+    if (key === "arrowup") finalSkillKameOffsetY += step;
+    if (key === "arrowdown") finalSkillKameOffsetY -= step;
+    e.preventDefault();
+    return;
+  }
+
   if (key === "escape") {
     e.preventDefault();
+    if (guideModal && !guideModal.classList.contains("hidden")) {
+      closeGuideModal();
+      return;
+    }
     if (isPauseMenuOpen) {
       closePauseMenu();
     } else {
@@ -4569,6 +7159,11 @@ window.addEventListener("keydown", (e) => {
     if (e.repeat) return;
     pressControl("enter");
   }
+  if (key === " ") {
+    if (e.repeat) return;
+    e.preventDefault();
+    pressControl("space");
+  }
 });
 
 window.addEventListener("keyup", (e) => {
@@ -4581,6 +7176,7 @@ window.addEventListener("keyup", (e) => {
   if (key === "h") releaseControl("h");
   if (key === "s") releaseControl("s");
   if (key === "w") releaseControl("w");
+  if (key === " ") releaseControl("space");
   if (key === "d") {
     releaseControl("d");
   }
